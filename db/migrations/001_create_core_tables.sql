@@ -5,18 +5,26 @@ CREATE TABLE IF NOT EXISTS teams (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL UNIQUE,
   description TEXT NULL,
+  manager_name VARCHAR(150) NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   team_id INT NULL,
+  username VARCHAR(50) NOT NULL UNIQUE,
   name VARCHAR(100) NOT NULL,
   email VARCHAR(150) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
   role ENUM('admin','user') NOT NULL DEFAULT 'user',
   level INT NOT NULL DEFAULT 1,
   xp INT NOT NULL DEFAULT 0,
+  phone VARCHAR(50) NULL,
+  country VARCHAR(100) NULL,
+  city VARCHAR(100) NULL,
+  timezone VARCHAR(100) NULL DEFAULT 'UTC',
+  theme VARCHAR(50) NULL DEFAULT 'light',
+  avatar_url VARCHAR(255) NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_users_team FOREIGN KEY (team_id) REFERENCES teams(id)
@@ -44,6 +52,23 @@ CREATE TABLE IF NOT EXISTS task_assignments (
   CONSTRAINT fk_assignment_task FOREIGN KEY (task_id) REFERENCES tasks(id),
   CONSTRAINT fk_assignment_user FOREIGN KEY (user_id) REFERENCES users(id),
   CONSTRAINT uniq_assignment UNIQUE (task_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS badges (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE,
+  icon_url VARCHAR(255) NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS user_badges (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  badge_id INT NOT NULL,
+  earned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_user_badges_user FOREIGN KEY (user_id) REFERENCES users(id),
+  CONSTRAINT fk_user_badges_badge FOREIGN KEY (badge_id) REFERENCES badges(id),
+  CONSTRAINT uniq_user_badge UNIQUE (user_id, badge_id)
 );
 
 CREATE TABLE IF NOT EXISTS xp_events (
