@@ -1,0 +1,10 @@
+nav {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin: 25px 50px;
+}
+
+nav button {
+	margin-left: 50px;
+}
