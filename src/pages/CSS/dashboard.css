@@ -111,21 +111,57 @@
   box-shadow: 10px 10px 20px rgb(5, 0, 4);
 }
 
-.task-list {
+.list-wrapper {
   height: 650px;
   width: 450px;
-  background-color: rgb(33, 0, 25);
+  overflow: visible;
+}
+
+.scroll-area {
+  height: 100%;               
+  width: 100%;
+  padding-left: 70px;
+  padding-right: 70px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  overflow-y: auto;           
+  overflow-x: visible;        
+  scroll-behavior: smooth;
+  
+  overflow-x: hidden; 
+}
+
+.scroll-area::after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+}
+
+.scroll-area::-webkit-scrollbar {
+  width: 8px;
+}
+.scroll-area::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.2);
+  border-radius: 4px;
+}
+.scroll-area {
+  scrollbar-width: thin;      
+}
+
+.task-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;           
+  background: rgb(33, 0, 25);
   border: 2px solid rgb(76, 0, 57);
   border-radius: 20px;
   box-shadow: 10px 10px 20px rgb(5, 0, 4);
-  overflow-y: scroll;
-  overflow-x: visible;
-  scroll-behavior: smooth;
-  scrollbar-width: auto;
 }
 
 .task-card {
   position: relative;
+  overflow-x: visible;
   margin: 20px auto;
   padding: 10px;
   width: 90%;
@@ -136,15 +172,21 @@
   box-shadow: 10px 10px 20px rgb(5, 0, 4);
   will-change: transform;
   transition: transform .25s ease,
-              border .25s ease;
+              border .25s ease,
+              box-shadow .25s ease;
 }
-
 .task-card:hover { 
   width: 400px;
   cursor: pointer;
   transform: scale(1.4);
   border: 4px solid rgb(98, 44, 114);
-  z-index: 1;
+  z-index: 4;
+  overflow-x: visible;
+}
+
+.task-card:focus-visible {
+  outline: 2px solid #ffcc00;    
+  outline-offset: 4px;
 }
 
 .task-title {
@@ -189,12 +231,12 @@
 
 .task-view-container {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
   height: 80%;
   width: 100%;
   height: 800px;
-  width: 1500px;
+  width: 1900px;
   border: 2px solid rgb(76, 0, 57);
   border-radius: 20px;
   box-shadow: 10px 10px 20px rgb(5, 0, 4);

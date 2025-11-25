@@ -41,6 +41,7 @@ export default function Dashboard() {
 				</div>
 			</div>
 			<div className='dash-main'>
+				{/* Add images for buttons here with onClick functionality */}
 				<div className='dash-buttons'>
 					<div className='dash-button'>
 						<p>■</p>
@@ -55,84 +56,190 @@ export default function Dashboard() {
 						<p>■</p>
 					</div>
 				</div>
+				{/* Swap this mess for a list component */}
 				<div className='task-view-container'>
 					<div className='assigned-tasks'>
 						<p className='list-title'>Tasks</p>
-						<ul className='task-list'>
-							<li>
-								<div className='task-card'>
-									<p className='task-title'>task title</p>
-									<p className='task-desc'>task description</p>
-									<div className='task-buttons'>
-										<button className='assign-button btn'>Assign</button>
-										<button className='complete-button btn'>Complete</button>
-									</div>
-								</div>
-							</li>
-							<li>
-								<div className='task-card'>
-									<p className='task-title'>task title</p>
-									<p className='task-desc'>task description</p>
-									<div className='task-buttons'>
-										<button className='assign-button btn'>Assign</button>
-										<button className='complete-button btn'>Complete</button>
-									</div>
-								</div>
-							</li>
-							<li>
-								<div className='task-card'>
-									<p className='task-title'>task title</p>
-									<p className='task-desc'>task description</p>
-									<div className='task-buttons'>
-										<button className='assign-button btn'>Assign</button>
-										<button className='complete-button btn'>Complete</button>
-									</div>
-								</div>
-							</li>
-							<li>
-								<div className='task-card'>
-									<p className='task-title'>task title</p>
-									<p className='task-desc'>task description</p>
-									<div className='task-buttons'>
-										<button className='assign-button btn'>Assign</button>
-										<button className='complete-button btn'>Complete</button>
-									</div>
-								</div>
-							</li>
-						</ul>
+						<div className='scroll-area'>
+							<div className='list-wrapper'>
+								<ul className='task-list'>
+									<li>
+										<div
+											className='task-card'
+											tabIndex={0}
+										>
+											<p className='task-title'>task title</p>
+											<p className='task-desc'>task description</p>
+											<div className='task-buttons'>
+												<button className='assign-button btn'>Assign</button>
+												<button className='complete-button btn'>
+													Complete
+												</button>
+											</div>
+										</div>
+									</li>
+									<li>
+										<div className='task-card'>
+											<p className='task-title'>task title</p>
+											<p className='task-desc'>task description</p>
+											<div className='task-buttons'>
+												<button className='assign-button btn'>Assign</button>
+												<button className='complete-button btn'>
+													Complete
+												</button>
+											</div>
+										</div>
+									</li>
+									<li>
+										<div className='task-card'>
+											<p className='task-title'>task title</p>
+											<p className='task-desc'>task description</p>
+											<div className='task-buttons'>
+												<button className='assign-button btn'>Assign</button>
+												<button className='complete-button btn'>
+													Complete
+												</button>
+											</div>
+										</div>
+									</li>
+									<li>
+										<div className='task-card'>
+											<p className='task-title'>task title</p>
+											<p className='task-desc'>task description</p>
+											<div className='task-buttons'>
+												<button className='assign-button btn'>Assign</button>
+												<button className='complete-button btn'>
+													Complete
+												</button>
+											</div>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
 					</div>
 					<div className='inprogress-tasks'>
 						<p className='list-title'>In-progress</p>
-						<ul className='task-list'>
-							<li>
-								<div className='task-card'>
-									<p className='task-title'>task title</p>
-									<p className='task-desc'>task description</p>
-									<div className='task-buttons'>
-										<button className='assign-button btn'>Assign</button>
-										<button className='complete-button btn'>Complete</button>
-									</div>
-								</div>
-							</li>
-						</ul>
+						<div className='scroll-area'>
+							<div className='list-wrapper'>
+								<ul className='task-list'>
+									<li>
+										<div
+											className='task-card'
+											tabIndex={0}
+										>
+											<p className='task-title'>task title</p>
+											<p className='task-desc'>task description</p>
+											<div className='task-buttons'>
+												<button className='assign-button btn'>Assign</button>
+												<button className='complete-button btn'>
+													Complete
+												</button>
+											</div>
+										</div>
+									</li>
+									<li>
+										<div className='task-card'>
+											<p className='task-title'>task title</p>
+											<p className='task-desc'>task description</p>
+											<div className='task-buttons'>
+												<button className='assign-button btn'>Assign</button>
+												<button className='complete-button btn'>
+													Complete
+												</button>
+											</div>
+										</div>
+									</li>
+									<li>
+										<div className='task-card'>
+											<p className='task-title'>task title</p>
+											<p className='task-desc'>task description</p>
+											<div className='task-buttons'>
+												<button className='assign-button btn'>Assign</button>
+												<button className='complete-button btn'>
+													Complete
+												</button>
+											</div>
+										</div>
+									</li>
+									<li>
+										<div className='task-card'>
+											<p className='task-title'>task title</p>
+											<p className='task-desc'>task description</p>
+											<div className='task-buttons'>
+												<button className='assign-button btn'>Assign</button>
+												<button className='complete-button btn'>
+													Complete
+												</button>
+											</div>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
 					</div>
 					<div className='complete-tasks'>
 						<p className='list-title'>Complete</p>
-						<ul className='task-list'>
-							<li>
-								<div className='task-card'>
-									<p className='task-title'>task title</p>
-									<p className='task-desc'>task description</p>
-									<div className='task-buttons'>
-										<button className='assign-button btn'>Assign</button>
-										<button className='complete-button btn'>Complete</button>
-									</div>
-								</div>
-							</li>
-						</ul>
+						<div className='scroll-area'>
+							<div className='list-wrapper'>
+								<ul className='task-list'>
+									<li>
+										<div
+											className='task-card'
+											tabIndex={0}
+										>
+											<p className='task-title'>task title</p>
+											<p className='task-desc'>task description</p>
+											<div className='task-buttons'>
+												<button className='assign-button btn'>Assign</button>
+												<button className='complete-button btn'>
+													Complete
+												</button>
+											</div>
+										</div>
+									</li>
+									<li>
+										<div className='task-card'>
+											<p className='task-title'>task title</p>
+											<p className='task-desc'>task description</p>
+											<div className='task-buttons'>
+												<button className='assign-button btn'>Assign</button>
+												<button className='complete-button btn'>
+													Complete
+												</button>
+											</div>
+										</div>
+									</li>
+									<li>
+										<div className='task-card'>
+											<p className='task-title'>task title</p>
+											<p className='task-desc'>task description</p>
+											<div className='task-buttons'>
+												<button className='assign-button btn'>Assign</button>
+												<button className='complete-button btn'>
+													Complete
+												</button>
+											</div>
+										</div>
+									</li>
+									<li>
+										<div className='task-card'>
+											<p className='task-title'>task title</p>
+											<p className='task-desc'>task description</p>
+											<div className='task-buttons'>
+												<button className='assign-button btn'>Assign</button>
+												<button className='complete-button btn'>
+													Complete
+												</button>
+											</div>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div className='metrics-view-container'></div>
+				{/* <div className='metrics-view-container'></div> */}
 			</div>
 		</div>
 	);
