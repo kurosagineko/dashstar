@@ -33,6 +33,19 @@ const fakeTaskLists = {
 			desc: 'page keeps reloading when submit is clicked',
 		},
 	],
+	inprogress: [
+		{
+			id: 0,
+			title: 'Fix bugs in main.js',
+			desc: 'page keeps reloading when submit is clicked',
+		},
+		{
+			id: 1,
+			title: 'Fix bugs in main.js',
+			desc: 'page keeps reloading when submit is clicked',
+		},
+	],
+	complete: [],
 };
 
 export default function Dashboard() {
@@ -42,6 +55,28 @@ export default function Dashboard() {
 	const [xPSession, setxPSession] = useState(25);
 	const [usersName, setusersName] = useState('Eri');
 	const [usersSurname, setusersSurname] = useState('Belladonna');
+
+	const TaskListPlaceHolder = () => {
+		const placeholderStyle = {
+			height: '100%',
+			width: '100%',
+			color: '#eba8ffff',
+			display: 'flex',
+			flexDirection: 'column',
+			justifyContent: 'center',
+			alignItems: 'center',
+			fontSize: '2rem',
+			border: '2px solid rgb(76, 0, 57)',
+			borderRadius: '20px',
+		};
+		return (
+			<div style={placeholderStyle}>
+				<p>No tasks in this list</p>
+				{/* Maybe switch for an image here */}
+				<p>(～￣▽￣)～</p>
+			</div>
+		);
+	};
 
 	return (
 		<div className='dashboard'>
@@ -92,40 +127,52 @@ export default function Dashboard() {
 				{}
 				<div className='task-view-container'>
 					<TaskList title={'Tasks'}>
-						<ul className='task-list'>
-							{fakeTaskLists.tasks.map(task => (
-								<li key={task.id}>
-									<TaskCard
-										title={task.title}
-										desc={task.desc}
-									/>
-								</li>
-							))}
-						</ul>
+						{fakeTaskLists.tasks.length !== 0 ? (
+							<ul className='task-list'>
+								{fakeTaskLists.tasks.map(task => (
+									<li key={task.id}>
+										<TaskCard
+											title={task.title}
+											desc={task.desc}
+										/>
+									</li>
+								))}
+							</ul>
+						) : (
+							<TaskListPlaceHolder />
+						)}
 					</TaskList>
 					<TaskList title={'In-progress'}>
-						<ul className='task-list'>
-							{fakeTaskLists.tasks.map(task => (
-								<li key={task.id}>
-									<TaskCard
-										title={task.title}
-										desc={task.desc}
-									/>
-								</li>
-							))}
-						</ul>
+						{fakeTaskLists.inprogress.length !== 0 ? (
+							<ul className='task-list'>
+								{fakeTaskLists.inprogress.map(task => (
+									<li key={task.id}>
+										<TaskCard
+											title={task.title}
+											desc={task.desc}
+										/>
+									</li>
+								))}
+							</ul>
+						) : (
+							<TaskListPlaceHolder />
+						)}
 					</TaskList>
 					<TaskList title={'Completed'}>
-						<ul className='task-list'>
-							{fakeTaskLists.tasks.map(task => (
-								<li key={task.id}>
-									<TaskCard
-										title={task.title}
-										desc={task.desc}
-									/>
-								</li>
-							))}
-						</ul>
+						{fakeTaskLists.complete.length !== 0 ? (
+							<ul className='task-list'>
+								{fakeTaskLists.complete.map(task => (
+									<li key={task.id}>
+										<TaskCard
+											title={task.title}
+											desc={task.desc}
+										/>
+									</li>
+								))}
+							</ul>
+						) : (
+							<TaskListPlaceHolder />
+						)}
 					</TaskList>
 				</div>
 				{/* <div className='metrics-view-container'></div> */}
