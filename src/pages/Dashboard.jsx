@@ -1,7 +1,52 @@
 import { useState, useContext } from 'react';
+import TaskCard from '../components/TaskCard';
+import TaskList from '../components/TaskList';
 import './CSS/dashboard.css';
 
 import avatarDefault from '../assets/avatardefault.svg';
+
+const fakeTaskLists = {
+	tasks: [
+		{
+			id: 0,
+			title: 'Fix bugs in main.js',
+			desc: 'page keeps reloading when submit is clicked',
+		},
+		{
+			id: 1,
+			title: 'Fix bugs in main.js',
+			desc: 'page keeps reloading when submit is clicked',
+		},
+		{
+			id: 2,
+			title: 'Fix bugs in main.js',
+			desc: 'page keeps reloading when submit is clicked',
+		},
+		{
+			id: 3,
+			title: 'Fix bugs in main.js',
+			desc: 'page keeps reloading when submit is clicked',
+		},
+		{
+			id: 4,
+			title: 'Fix bugs in main.js',
+			desc: 'page keeps reloading when submit is clicked',
+		},
+	],
+	inprogress: [
+		{
+			id: 0,
+			title: 'Fix bugs in main.js',
+			desc: 'page keeps reloading when submit is clicked',
+		},
+		{
+			id: 1,
+			title: 'Fix bugs in main.js',
+			desc: 'page keeps reloading when submit is clicked',
+		},
+	],
+	complete: [],
+};
 
 export default function Dashboard() {
 	const [level, setLevel] = useState(5);
@@ -10,6 +55,28 @@ export default function Dashboard() {
 	const [xPSession, setxPSession] = useState(25);
 	const [usersName, setusersName] = useState('Eri');
 	const [usersSurname, setusersSurname] = useState('Belladonna');
+
+	const TaskListPlaceHolder = () => {
+		const placeholderStyle = {
+			height: '100%',
+			width: '100%',
+			color: '#eba8ffff',
+			display: 'flex',
+			flexDirection: 'column',
+			justifyContent: 'center',
+			alignItems: 'center',
+			fontSize: '2rem',
+			border: '2px solid rgb(76, 0, 57)',
+			borderRadius: '20px',
+		};
+		return (
+			<div style={placeholderStyle}>
+				<p>No tasks in this list</p>
+				{/* Maybe switch for an image here */}
+				<p>(～￣▽￣)～</p>
+			</div>
+		);
+	};
 
 	return (
 		<div className='dashboard'>
@@ -40,7 +107,9 @@ export default function Dashboard() {
 					</div>
 				</div>
 			</div>
+			{}
 			<div className='dash-main'>
+				{/* Add images for buttons here with onClick functionality */}
 				<div className='dash-buttons'>
 					<div className='dash-button'>
 						<p>■</p>
@@ -55,84 +124,58 @@ export default function Dashboard() {
 						<p>■</p>
 					</div>
 				</div>
+				{}
 				<div className='task-view-container'>
-					<div className='assigned-tasks'>
-						<p className='list-title'>Tasks</p>
-						<ul className='task-list'>
-							<li>
-								<div className='task-card'>
-									<p className='task-title'>task title</p>
-									<p className='task-desc'>task description</p>
-									<div className='task-buttons'>
-										<button className='assign-button btn'>Assign</button>
-										<button className='complete-button btn'>Complete</button>
-									</div>
-								</div>
-							</li>
-							<li>
-								<div className='task-card'>
-									<p className='task-title'>task title</p>
-									<p className='task-desc'>task description</p>
-									<div className='task-buttons'>
-										<button className='assign-button btn'>Assign</button>
-										<button className='complete-button btn'>Complete</button>
-									</div>
-								</div>
-							</li>
-							<li>
-								<div className='task-card'>
-									<p className='task-title'>task title</p>
-									<p className='task-desc'>task description</p>
-									<div className='task-buttons'>
-										<button className='assign-button btn'>Assign</button>
-										<button className='complete-button btn'>Complete</button>
-									</div>
-								</div>
-							</li>
-							<li>
-								<div className='task-card'>
-									<p className='task-title'>task title</p>
-									<p className='task-desc'>task description</p>
-									<div className='task-buttons'>
-										<button className='assign-button btn'>Assign</button>
-										<button className='complete-button btn'>Complete</button>
-									</div>
-								</div>
-							</li>
-						</ul>
-					</div>
-					<div className='inprogress-tasks'>
-						<p className='list-title'>In-progress</p>
-						<ul className='task-list'>
-							<li>
-								<div className='task-card'>
-									<p className='task-title'>task title</p>
-									<p className='task-desc'>task description</p>
-									<div className='task-buttons'>
-										<button className='assign-button btn'>Assign</button>
-										<button className='complete-button btn'>Complete</button>
-									</div>
-								</div>
-							</li>
-						</ul>
-					</div>
-					<div className='complete-tasks'>
-						<p className='list-title'>Complete</p>
-						<ul className='task-list'>
-							<li>
-								<div className='task-card'>
-									<p className='task-title'>task title</p>
-									<p className='task-desc'>task description</p>
-									<div className='task-buttons'>
-										<button className='assign-button btn'>Assign</button>
-										<button className='complete-button btn'>Complete</button>
-									</div>
-								</div>
-							</li>
-						</ul>
-					</div>
+					<TaskList title={'Tasks'}>
+						{fakeTaskLists.tasks.length !== 0 ? (
+							<ul className='task-list'>
+								{fakeTaskLists.tasks.map(task => (
+									<li key={task.id}>
+										<TaskCard
+											title={task.title}
+											desc={task.desc}
+										/>
+									</li>
+								))}
+							</ul>
+						) : (
+							<TaskListPlaceHolder />
+						)}
+					</TaskList>
+					<TaskList title={'In-progress'}>
+						{fakeTaskLists.inprogress.length !== 0 ? (
+							<ul className='task-list'>
+								{fakeTaskLists.inprogress.map(task => (
+									<li key={task.id}>
+										<TaskCard
+											title={task.title}
+											desc={task.desc}
+										/>
+									</li>
+								))}
+							</ul>
+						) : (
+							<TaskListPlaceHolder />
+						)}
+					</TaskList>
+					<TaskList title={'Completed'}>
+						{fakeTaskLists.complete.length !== 0 ? (
+							<ul className='task-list'>
+								{fakeTaskLists.complete.map(task => (
+									<li key={task.id}>
+										<TaskCard
+											title={task.title}
+											desc={task.desc}
+										/>
+									</li>
+								))}
+							</ul>
+						) : (
+							<TaskListPlaceHolder />
+						)}
+					</TaskList>
 				</div>
-				<div className='metrics-view-container'></div>
+				{/* <div className='metrics-view-container'></div> */}
 			</div>
 		</div>
 	);
