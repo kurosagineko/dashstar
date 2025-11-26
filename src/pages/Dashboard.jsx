@@ -49,6 +49,27 @@ const fakeTaskLists = {
 	complete: [],
 };
 
+// const tasks = [
+// 	{
+// 		id: 0,
+// 		list: 'task',
+// 		title: 'Fix bugs in main.js',
+// 		desc: 'page keeps reloading when submit is clicked',
+// 	},
+// 	{
+// 		id: 1,
+// 		list: 'task',
+// 		title: 'Fix bugs in main.js',
+// 		desc: 'page keeps reloading when submit is clicked',
+// 	},
+// 	{
+// 		id: 2,
+// 		list: 'inprogress',
+// 		title: 'Fix bugs in main.js',
+// 		desc: 'page keeps reloading when submit is clicked',
+// 	},
+// ];
+
 export default function Dashboard() {
 	const [level, setLevel] = useState(5);
 	const [totalXp, settotalXp] = useState(503);
@@ -56,6 +77,7 @@ export default function Dashboard() {
 	const [xPSession, setxPSession] = useState(25);
 	const [usersName, setusersName] = useState('Eri');
 	const [usersSurname, setusersSurname] = useState('Belladonna');
+	const [taskList, setTaskList] = useState([]);
 
 	const TaskListPlaceHolder = () => {
 		const placeholderStyle = {
@@ -78,6 +100,10 @@ export default function Dashboard() {
 			</div>
 		);
 	};
+
+  const getCardsListValue = () => {};
+
+	const sortCardsIntoLists = () => {};
 
 	return (
 		<div className='dashboard'>
