@@ -17,14 +17,14 @@
   margin-top: 40px;
 }
 
-.burger-menu p {
-  font-size: 5rem;
-  color: rgb(76, 0, 57);
+.burger-menu:hover {
+  cursor: pointer;
 }
 
 .widgets {
   display: flex;
   gap: 60px;
+  font-size: 1.3rem;
 }
 
 .current-level{
@@ -35,9 +35,9 @@
 
 .profile-widget {
   height: 120px;
-  width: 250px;
+  width: 350px;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   gap: 20px;
   background-color: rgb(33, 0, 25);
   border: 2px solid rgb(76, 0, 57);
@@ -55,12 +55,12 @@
   justify-content: center;
   align-items: center;
   height: 120px;
-  width: 250px;
+  width: 350px;
   margin: auto 0;
   background-color: rgb(33, 0, 25);
   border: 2px solid rgb(76, 0, 57);
   border-radius: 20px;
-  padding: 10px;
+  padding: 20px;
   box-shadow: 10px 10px 20px rgb(5, 0, 4);
 }
 

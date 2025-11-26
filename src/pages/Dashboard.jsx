@@ -4,6 +4,7 @@ import TaskList from '../components/TaskList';
 import './CSS/dashboard.css';
 
 import avatarDefault from '../assets/avatardefault.svg';
+import burgerMenuIcon from '../assets/BurgerMenuIcon.png';
 
 const fakeTaskLists = {
 	tasks: [
@@ -82,7 +83,10 @@ export default function Dashboard() {
 		<div className='dashboard'>
 			<div className='dash-header'>
 				<div className='burger-menu'>
-					<p>≡</p>
+					<img
+						src={burgerMenuIcon}
+						alt='Open menu icon'
+					/>
 				</div>
 				<div className='widgets'>
 					<div className='level-widget'>
@@ -101,7 +105,7 @@ export default function Dashboard() {
 						<div className='profile-pic'>
 							<img
 								src={avatarDefault}
-								alt=''
+								alt='user profile picture'
 							/>
 						</div>
 					</div>
@@ -175,8 +179,8 @@ export default function Dashboard() {
 						)}
 					</TaskList>
 				</div>
-				{/* <div className='metrics-view-container'></div> */}
 			</div>
+			{/* <div className='metrics-view-container'></div> */}
 		</div>
 	);
 }

@@ -4,6 +4,11 @@
 	overflow: visible;
 }
 
+.list-title {
+	font-size: 1.7rem;
+  padding-left: 70px;
+}
+
 .scroll-area {
 	height: 100%;
 	width: 100%;
