@@ -1,74 +1,14 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import TaskCard from '../components/TaskCard';
 import TaskList from '../components/TaskList';
 import './CSS/dashboard.css';
 
+import taskData from '../../data/taskdata.json';
+
 import avatarDefault from '../assets/avatardefault.svg';
 import burgerMenuIcon from '../assets/BurgerMenuIcon.png';
 
-const fakeTaskLists = {
-	tasks: [
-		{
-			id: 0,
-			title: 'Fix bugs in main.js',
-			desc: 'page keeps reloading when submit is clicked',
-		},
-		{
-			id: 1,
-			title: 'Fix bugs in main.js',
-			desc: 'page keeps reloading when submit is clicked',
-		},
-		{
-			id: 2,
-			title: 'Fix bugs in main.js',
-			desc: 'page keeps reloading when submit is clicked',
-		},
-		{
-			id: 3,
-			title: 'Fix bugs in main.js',
-			desc: 'page keeps reloading when submit is clicked',
-		},
-		{
-			id: 4,
-			title: 'Fix bugs in main.js',
-			desc: 'page keeps reloading when submit is clicked',
-		},
-	],
-	inprogress: [
-		{
-			id: 0,
-			title: 'Fix bugs in main.js',
-			desc: 'page keeps reloading when submit is clicked',
-		},
-		{
-			id: 1,
-			title: 'Fix bugs in main.js',
-			desc: 'page keeps reloading when submit is clicked',
-		},
-	],
-	complete: [],
-};
-
-// const tasks = [
-// 	{
-// 		id: 0,
-// 		list: 'task',
-// 		title: 'Fix bugs in main.js',
-// 		desc: 'page keeps reloading when submit is clicked',
-// 	},
-// 	{
-// 		id: 1,
-// 		list: 'task',
-// 		title: 'Fix bugs in main.js',
-// 		desc: 'page keeps reloading when submit is clicked',
-// 	},
-// 	{
-// 		id: 2,
-// 		list: 'inprogress',
-// 		title: 'Fix bugs in main.js',
-// 		desc: 'page keeps reloading when submit is clicked',
-// 	},
-// ];
+JSON.stringify(taskData);
 
 export default function Dashboard() {
 	const [level, setLevel] = useState(5);
@@ -78,6 +18,33 @@ export default function Dashboard() {
 	const [usersName, setusersName] = useState('Eri');
 	const [usersSurname, setusersSurname] = useState('Belladonna');
 	const [taskList, setTaskList] = useState([]);
+	const [inprogressList, setInprogressList] = useState([]);
+	const [completeList, setCompleteList] = useState([]);
+
+	useEffect(() => {
+		for (let i = 0; i < 3; i++) {
+			let listName = '';
+			if (i === 0) {
+				listName = 'task';
+			} else if (i === 1) {
+				listName = 'inprogress';
+			} else {
+				listName = 'complete';
+			}
+			const tempList = taskData.filter(task => task.list === listName);
+			console.log('tempList:', tempList);
+
+			if (tempList.length !== 0) {
+				if (tempList[0].list === 'task') {
+					setTaskList(tempList);
+				} else if (tempList[0].list === 'inprogress') {
+					setInprogressList(tempList);
+				} else if (tempList[0].list === 'complete') {
+					setCompleteList(tempList);
+				}
+			}
+		}
+	}, []);
 
 	const TaskListPlaceHolder = () => {
 		const placeholderStyle = {
@@ -101,9 +68,66 @@ export default function Dashboard() {
 		);
 	};
 
-  const getCardsListValue = () => {};
-
-	const sortCardsIntoLists = () => {};
+	const CreateTaskList = () => {
+		return (
+			<TaskList title={'Tasks'}>
+				{taskList.length !== 0 ? (
+					<ul className='task-list'>
+						{taskList.map(task => (
+							<li key={task.id}>
+								<TaskCard
+									title={task.title}
+									desc={task.desc}
+								/>
+							</li>
+						))}
+					</ul>
+				) : (
+					<TaskListPlaceHolder />
+				)}
+			</TaskList>
+		);
+	};
+	const CreateInprogressList = () => {
+		return (
+			<TaskList title={'In-progress'}>
+				{inprogressList.length !== 0 ? (
+					<ul className='task-list'>
+						{inprogressList.map(task => (
+							<li key={task.id}>
+								<TaskCard
+									title={task.title}
+									desc={task.desc}
+								/>
+							</li>
+						))}
+					</ul>
+				) : (
+					<TaskListPlaceHolder />
+				)}
+			</TaskList>
+		);
+	};
+	const CreateCompleteList = () => {
+		return (
+			<TaskList title={'Complete'}>
+				{completeList.length !== 0 ? (
+					<ul className='task-list'>
+						{completeList.map(task => (
+							<li key={task.id}>
+								<TaskCard
+									title={task.title}
+									desc={task.desc}
+								/>
+							</li>
+						))}
+					</ul>
+				) : (
+					<TaskListPlaceHolder />
+				)}
+			</TaskList>
+		);
+	};
 
 	return (
 		<div className='dashboard'>
@@ -156,54 +180,9 @@ export default function Dashboard() {
 				</div>
 				{}
 				<div className='task-view-container'>
-					<TaskList title={'Tasks'}>
-						{fakeTaskLists.tasks.length !== 0 ? (
-							<ul className='task-list'>
-								{fakeTaskLists.tasks.map(task => (
-									<li key={task.id}>
-										<TaskCard
-											title={task.title}
-											desc={task.desc}
-										/>
-									</li>
-								))}
-							</ul>
-						) : (
-							<TaskListPlaceHolder />
-						)}
-					</TaskList>
-					<TaskList title={'In-progress'}>
-						{fakeTaskLists.inprogress.length !== 0 ? (
-							<ul className='task-list'>
-								{fakeTaskLists.inprogress.map(task => (
-									<li key={task.id}>
-										<TaskCard
-											title={task.title}
-											desc={task.desc}
-										/>
-									</li>
-								))}
-							</ul>
-						) : (
-							<TaskListPlaceHolder />
-						)}
-					</TaskList>
-					<TaskList title={'Completed'}>
-						{fakeTaskLists.complete.length !== 0 ? (
-							<ul className='task-list'>
-								{fakeTaskLists.complete.map(task => (
-									<li key={task.id}>
-										<TaskCard
-											title={task.title}
-											desc={task.desc}
-										/>
-									</li>
-								))}
-							</ul>
-						) : (
-							<TaskListPlaceHolder />
-						)}
-					</TaskList>
+					<CreateTaskList />
+					<CreateInprogressList />
+					<CreateCompleteList />
 				</div>
 			</div>
 			{/* <div className='metrics-view-container'></div> */}
