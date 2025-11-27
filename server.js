@@ -144,6 +144,14 @@ const team = sequelize.define(
 			primaryKey: true,
 			autoIncrement: true,
 		},
+		workspace_code: {
+			type: DataTypes.NUMBER,
+			allowNull: false,
+		},
+		team_name: {
+			type: DataTypes.TEXT,
+			allowNull: false,
+		},
 		user_id_list: {
 			type: DataTypes.ARRAY, // list of user id's in this team
 			allowNull: false,
@@ -171,6 +179,10 @@ const task = sequelize.define(
 			autoIncrement: true,
 		},
 		team_id: {
+			type: DataTypes.NUMBER,
+			allowNull: false,
+		},
+		workspace_code: {
 			type: DataTypes.NUMBER,
 			allowNull: false,
 		},
@@ -219,6 +231,10 @@ const schedule = sequelize.define(
 			type: DataTypes.NUMBER,
 			allowNull: false,
 		},
+		workspace_code: {
+			type: DataTypes.NUMBER,
+			allowNull: false,
+		},
 		time_start: {
 			type: DataTypes.TEXT,
 			allowNull: false,
@@ -252,6 +268,10 @@ const message = sequelize.define(
 			type: DataTypes.NUMBER,
 			allowNull: false,
 		},
+		workspace_code: {
+			type: DataTypes.NUMBER,
+			allowNull: false,
+		},
 		date_created: {
 			type: DataTypes.TEXT,
 			allowNull: false,
@@ -271,10 +291,13 @@ const message = sequelize.define(
 app.get('/tasks/:team_id', async (req, res) => {
 	// must be logged in to access this route and have correct workspace code
 	const { team_id } = req.params;
+	const { workspace_code } = req.body;
+
 	try {
 		const tasks = await task.findAll({
 			where: {
 				team_id: team_id,
+				workspace_code: workspace_code,
 			},
 		});
 		res.json(tasks);
@@ -287,9 +310,11 @@ app.get('/tasks/:team_id', async (req, res) => {
 app.post('/tasks/:team_id', async (req, res) => {
 	// must have admin role to access this route and have correct workspace code
 	try {
-		const { team_id, task_name, task_desc, date_due, task_xp } = req.body;
+		const { team_id, workspace_code, task_name, task_desc, date_due, task_xp } =
+			req.body;
 		const newTask = await task.create({
 			team_id: team_id,
+			workspace_code: workspace_code,
 			task_name: task_name,
 			task_desc: task_desc,
 			date_created: new Date().toUTCString(),
@@ -308,11 +333,19 @@ app.put('/tasks/:id', async (req, res) => {
 	// must have admin role to access this route and have correct workspace code
 	const { id } = req.params;
 	try {
-		const { team_id, task_name, task_desc, date_due, status, task_xp } =
-			req.body;
+		const {
+			team_id,
+			workspace_code,
+			task_name,
+			task_desc,
+			date_due,
+			status,
+			task_xp,
+		} = req.body;
 		const editedTask = await task.update(
 			{
 				team_id: team_id,
+				workspace_code: workspace_code,
 				task_name: task_name,
 				task_desc: task_desc,
 				date_due: date_due,
@@ -331,8 +364,11 @@ app.put('/tasks/:id', async (req, res) => {
 app.delete('/tasks/:id', async (req, res) => {
 	// must have admin role to access this route and have correct workspace code
 	const { id } = req.params;
+	const { workspace_code } = req.body;
 	try {
-		const deletedTask = await task.destroy({ where: { id: id } });
+		const deletedTask = await task.destroy({
+			where: { id: id, workspace_code: workspace_code },
+		});
 		res.status(201).json(deletedTask);
 	} catch (error) {
 		res.status(500).json({ error: 'Error editing task' });
