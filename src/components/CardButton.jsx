@@ -10,10 +10,15 @@ export default function CardButton({ task_id, listSetter }) {
 		listSetter(list);
 		console.log('list after state change (via useEffect):', list);
 
-		const task = taskData.find(element => element.id === task_id);
+		const newData = taskData.map(element => {
+			if (element.id === task_id) {
+				return { ...element, list: list };
+			}
+			return element;
+		});
+		console.log('newData:', newData);
+		console.log('taskData', taskData);
 
-		task.list = list;
-		console.log('task:', task);
 	}, [list, listSetter]);
 
 	const ButtonStyle = {
