@@ -3,12 +3,12 @@ import TaskCard from '../components/TaskCard';
 import TaskList from '../components/TaskList';
 import './CSS/dashboard.css';
 
-import taskData from '../../data/taskdata.json';
+import tasks from '../../data/tasks.json';
 
 import avatarDefault from '../assets/avatardefault.svg';
 import burgerMenuIcon from '../assets/BurgerMenuIcon.png';
 
-JSON.stringify(taskData);
+JSON.stringify(tasks);
 
 export default function Dashboard() {
 	const [level, setLevel] = useState(5);
@@ -34,14 +34,15 @@ export default function Dashboard() {
 				listName = 'complete';
 			}
 
-			const tempList = taskData.filter(task => task.list === listName);
+			const tempList = tasks.filter(task => task.status === listName);
+			console.log('tempList:', tempList);
 
 			if (tempList.length !== 0) {
-				if (tempList[0].list === 'task') {
+				if (tempList[0].status === 'task') {
 					setTaskList(tempList);
-				} else if (tempList[0].list === 'inprogress') {
+				} else if (tempList[0].status === 'inprogress') {
 					setInprogressList(tempList);
-				} else if (tempList[0].list === 'complete') {
+				} else if (tempList[0].status === 'complete') {
 					setCompleteList(tempList);
 				}
 			}
