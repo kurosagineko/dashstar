@@ -1,13 +1,20 @@
-import { useContext, useEffect } from 'react';
-import { CardListContext } from '../context/AppContext';
+import { useEffect, useState } from 'react';
 
-export default function CardButton({ listSetter }) {
-	const ctx = useContext(CardListContext);
-	const { list, changeList } = ctx;
+import taskData from '../../data/taskdata.json';
+JSON.stringify(taskData);
+
+export default function CardButton({ task_id, listSetter }) {
+	const [list, setList] = useState('task');
 
 	useEffect(() => {
-		onListChange();
-	});
+		listSetter(list);
+		console.log('list after state change (via useEffect):', list);
+
+		const task = taskData.find(element => element.id === task_id);
+
+		task.list = list;
+		console.log('task:', task);
+	}, [list, listSetter]);
 
 	const ButtonStyle = {
 		assign: {
@@ -18,9 +25,12 @@ export default function CardButton({ listSetter }) {
 		},
 	};
 
-	const onListChange = () => {
-		listSetter(list);
+	const handleClick = () => {
+		console.log('list before setState:', list);
+		setList(prev => (prev === 'task' ? 'inprogress' : 'complete'));
 	};
+
+	if (list === 'complete') return null;
 
 	return (
 		<div>
@@ -28,10 +38,7 @@ export default function CardButton({ listSetter }) {
 				<button
 					className='btn'
 					style={list === 'task' ? ButtonStyle.assign : ButtonStyle.complete}
-					onClick={() => {
-						changeList();
-						onListChange();
-					}}
+					onClick={handleClick}
 				>
 					{list === 'task' ? 'Assign' : 'complete'}
 				</button>

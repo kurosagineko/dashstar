@@ -22,6 +22,8 @@ export default function Dashboard() {
 	const [completeList, setCompleteList] = useState([]);
 
 	useEffect(() => {
+		// populate the task lists on load
+		// only have and only will ever have 3 lists, sorry for the magic number :P
 		for (let i = 0; i < 3; i++) {
 			let listName = '';
 			if (i === 0) {
@@ -31,8 +33,8 @@ export default function Dashboard() {
 			} else {
 				listName = 'complete';
 			}
+
 			const tempList = taskData.filter(task => task.list === listName);
-			console.log('tempList:', tempList);
 
 			if (tempList.length !== 0) {
 				if (tempList[0].list === 'task') {
@@ -76,6 +78,7 @@ export default function Dashboard() {
 						{taskList.map(task => (
 							<li key={task.id}>
 								<TaskCard
+									task_id={task.id}
 									title={task.title}
 									desc={task.desc}
 								/>
@@ -96,6 +99,7 @@ export default function Dashboard() {
 						{inprogressList.map(task => (
 							<li key={task.id}>
 								<TaskCard
+									task_id={task.id}
 									title={task.title}
 									desc={task.desc}
 								/>
@@ -116,6 +120,7 @@ export default function Dashboard() {
 						{completeList.map(task => (
 							<li key={task.id}>
 								<TaskCard
+									task_id={task.id}
 									title={task.title}
 									desc={task.desc}
 								/>
