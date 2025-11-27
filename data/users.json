@@ -1,0 +1,58 @@
+[
+	{
+		"id": "0",
+		"team_id": "-1",
+		"workspace_code": "abc123@2025",
+		"name": "Bob Bobson",
+		"email": "bob@bobmail.com",
+		"password": "password123",
+		"role": "admin",
+		"current_tasks": "[]",
+		"level": "12",
+		"xp": "204",
+		"numTasksCompleted": "0",
+		"pfp": "assets/avatardefault.svg"
+	},
+	{
+		"id": "2",
+		"team_id": "-1",
+		"workspace_code": "abc123@2025",
+		"name": "Jane Janson",
+		"email": "jane@bobmail.com",
+		"password": "password123",
+		"role": "user",
+		"current_tasks": "[]",
+		"level": "2",
+		"xp": "48",
+		"numTasksCompleted": "4",
+		"pfp": "assets/avatardefault.svg"
+	},
+	{
+		"id": "3",
+		"team_id": "1",
+		"workspace_code": "abc123@2025",
+		"name": "Rob Robson",
+		"email": "Rob@bobmail.com",
+		"password": "password123",
+		"role": "user",
+		"current_tasks": "[]",
+		"level": "6",
+		"xp": "105`",
+		"numTasksCompleted": "11",
+		"pfp": "assets/avatardefault.svg"
+	},
+	{
+		"id": "4",
+		"team_id": "1",
+		"workspace_code": "abc123@2025",
+		"name": "Bill Billson",
+		"email": "bill@bobmail.com",
+		"password": "password123",
+		"role": "user",
+		"current_tasks": "[]",
+		"level": "6",
+		"xp": "105`",
+		"numTasksCompleted": "11",
+		"pfp": "assets/avatardefault.svg"
+	}
+]
