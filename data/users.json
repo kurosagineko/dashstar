@@ -1,7 +1,7 @@
 [
 	{
 		"id": "0",
-		"team_id": "-1",
+		"team_id": "1",
 		"workspace_code": "abc123@2025",
 		"name": "Bob Bobson",
 		"email": "bob@bobmail.com",
@@ -11,7 +11,8 @@
 		"level": "12",
 		"xp": "204",
 		"numTasksCompleted": "0",
-		"pfp": "assets/avatardefault.svg"
+		"theme": "dark",
+		"avatar_url": "assets/avatardefault.svg"
 	},
 	{
 		"id": "2",
@@ -25,7 +26,8 @@
 		"level": "2",
 		"xp": "48",
 		"numTasksCompleted": "4",
-		"pfp": "assets/avatardefault.svg"
+		"theme": "dark",
+		"avatar_url": "assets/avatardefault.svg"
 	},
 	{
 		"id": "3",
@@ -38,8 +40,9 @@
 		"current_tasks": "[]",
 		"level": "6",
 		"xp": "105`",
-		"numTasksCompleted": "11",
-		"pfp": "assets/avatardefault.svg"
+		"numTasksCompleted": "4",
+		"theme": "dark",
+		"avatar_url": "assets/avatardefault.svg"
 	},
 	{
 		"id": "4",
@@ -52,7 +55,8 @@
 		"current_tasks": "[]",
 		"level": "6",
 		"xp": "105`",
-		"numTasksCompleted": "11",
-		"pfp": "assets/avatardefault.svg"
+		"numTasksCompleted": "4",
+		"theme": "dark",
+		"avatar_url": "assets/avatardefault.svg"
 	}
 ]

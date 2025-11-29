@@ -1,10 +1,12 @@
 [
 	{
 		"id": "0",
+		"admin_id": "0",
 		"team_id": "1",
 		"workspace_code": "abc123@2025",
 		"time_start": "9:00am",
 		"time_end": "9:30am",
+		"status": "planned",
 		"message": "Stand up meeting"
 	}
 ]
