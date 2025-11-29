@@ -25,10 +25,12 @@ export default function FeatureSection({ features }) {
 										className='feature relative pl-9'
 									>
 										<dt className='inline font-semibold text-white'>
-											<feature.icon
+											<di
 												aria-hidden='true'
-												className='absolute top-1 left-1 size-5 text-indigo-400'
-											/>
+												className='mr-10 size-5 text-indigo-400'
+											>
+												{feature.icon}
+											</di>
 											{feature.name}
 										</dt>{' '}
 										<dd className='inline'>{feature.description}</dd>
@@ -42,7 +44,7 @@ export default function FeatureSection({ features }) {
 						src='https://tailwindcss.com/plus-assets/img/component-images/dark-project-app-screenshot.png'
 						width={2432}
 						height={1442}
-						className='w-3xl max-w-none rounded-xl shadow-xl ring-1 ring-white/10 sm:w-228 md:-ml-4 lg:-ml-0'
+						className='w-3xl max-w-none rounded-xl shadow-xl ring-1 ring-white/10 sm:w-228 md:-ml-4 lg:-ml-0 feat-img'
 					/>
 				</div>
 			</div>
