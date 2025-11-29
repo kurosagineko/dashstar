@@ -1,16 +1,35 @@
 import LandingHeader from '../components/LandingHeader';
 import CarouselBanner from '../components/CarouselBanner';
 import LandingFooter from '../components/LandingFooter';
+import FeatureSection from '../components/FeatureSection';
 import './CSS/landing.css';
+
+const features = [
+	{
+		name: 'Manage your workflow.',
+		description: 'Tasks created by admins, direct to your board.',
+		icon: 'o',
+	},
+	{
+		name: 'Earn XP, Level up. Win.',
+		description:
+			'Complete tasks to earn xp, compete with your team or against other teams, work with goals.',
+		icon: 'o',
+	},
+	{
+		name: 'Database backups.',
+		description:
+			'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.',
+		icon: 'o',
+	},
+];
 
 export default function Landing() {
 	return (
 		<div className='landing'>
 			<LandingHeader />
-			<h2 className='tagline'>
-				Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum,
-				explicabo?
-			</h2>
+			<h2 className='tagline'>Free, fun and intuitive task management</h2>
+			<FeatureSection features={features} />
 			<CarouselBanner />
 			<p className='pitch'>
 				Selling Pitch here. Lorem ipsum, dolor sit amet consectetur adipisicing

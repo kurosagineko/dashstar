@@ -3,12 +3,8 @@ import TaskCard from '../components/TaskCard';
 import TaskList from '../components/TaskList';
 import './CSS/dashboard.css';
 
-import tasks from '../../data/tasks.json';
-
 import avatarDefault from '../assets/avatardefault.svg';
 import burgerMenuIcon from '../assets/BurgerMenuIcon.png';
-
-JSON.stringify(tasks);
 
 export default function Dashboard() {
 	const [level, setLevel] = useState(5);
@@ -21,32 +17,32 @@ export default function Dashboard() {
 	const [inprogressList, setInprogressList] = useState([]);
 	const [completeList, setCompleteList] = useState([]);
 
-	useEffect(() => {
-		// populate the task lists on load
-		// only have and only will ever have 3 lists, sorry for the magic number :P
-		for (let i = 0; i < 3; i++) {
-			let status = '';
-			if (i === 0) {
-				status = 'open';
-			} else if (i === 1) {
-				status = 'inprogress';
-			} else {
-				status = 'complete';
-			}
+	// useEffect(() => {
+	// 	// populate the task lists on load
+	// 	// only have and only will ever have 3 lists, sorry for the magic number :P
+	// 	for (let i = 0; i < 3; i++) {
+	// 		let status = '';
+	// 		if (i === 0) {
+	// 			status = 'open';
+	// 		} else if (i === 1) {
+	// 			status = 'inprogress';
+	// 		} else {
+	// 			status = 'complete';
+	// 		}
 
-			const tempList = tasks.filter(task => task.status === status);
+	// 		const tempList = tasks.filter(task => task.status === status);
 
-			if (tempList.length !== 0) {
-				if (tempList[0].status === 'open') {
-					setTaskList(tempList);
-				} else if (tempList[0].status === 'inprogress') {
-					setInprogressList(tempList);
-				} else if (tempList[0].status === 'complete') {
-					setCompleteList(tempList);
-				}
-			}
-		}
-	}, []);
+	// 		if (tempList.length !== 0) {
+	// 			if (tempList[0].status === 'open') {
+	// 				setTaskList(tempList);
+	// 			} else if (tempList[0].status === 'inprogress') {
+	// 				setInprogressList(tempList);
+	// 			} else if (tempList[0].status === 'complete') {
+	// 				setCompleteList(tempList);
+	// 			}
+	// 		}
+	// 	}
+	// }, []);
 
 	const TaskListPlaceHolder = () => {
 		const placeholderStyle = {
@@ -74,7 +70,7 @@ export default function Dashboard() {
 		return (
 			<TaskList title={'Tasks'}>
 				{taskList.length !== 0 ? (
-					<ul className='task-list'>
+					<ul className='task-list dash-bg dash-border dash-shadow'>
 						{taskList.map(task => (
 							<li key={task.id}>
 								<TaskCard
@@ -95,7 +91,7 @@ export default function Dashboard() {
 		return (
 			<TaskList title={'In-progress'}>
 				{inprogressList.length !== 0 ? (
-					<ul className='task-list'>
+					<ul className='task-list dash-bg dash-border dash-shadow'>
 						{inprogressList.map(task => (
 							<li key={task.id}>
 								<TaskCard
@@ -116,7 +112,7 @@ export default function Dashboard() {
 		return (
 			<TaskList title={'Complete'}>
 				{completeList.length !== 0 ? (
-					<ul className='task-list'>
+					<ul className='task-list dash-bg dash-border dash-shadow'>
 						{completeList.map(task => (
 							<li key={task.id}>
 								<TaskCard
@@ -144,7 +140,7 @@ export default function Dashboard() {
 					/>
 				</div>
 				<div className='widgets'>
-					<div className='level-widget'>
+					<div className='level-widget dash-bg dash-border dash-shadow'>
 						<div className='current-level'>
 							<p>Level: {level}</p>
 							<p>Total XP: {totalXp}</p>
@@ -152,7 +148,7 @@ export default function Dashboard() {
 						<p>XP To Next: {nextXp}</p>
 						<p>XP This session: {xPSession}</p>
 					</div>
-					<div className='profile-widget'>
+					<div className='profile-widget dash-bg dash-border dash-shadow'>
 						<div className='user-info'>
 							<p>{usersName}</p>
 							<p>{usersSurname}</p>
@@ -169,28 +165,28 @@ export default function Dashboard() {
 			{}
 			<div className='dash-main'>
 				{/* Add images for buttons here with onClick functionality */}
-				<div className='dash-buttons'>
-					<div className='dash-button'>
+				<div className='dash-buttons dash-border dash-shadow'>
+					<div className='dash-button dash-bg dash-border dash-shadow'>
 						<p>■</p>
 					</div>
-					<div className='dash-button'>
+					<div className='dash-button dash-bg dash-border dash-shadow'>
 						<p>■</p>
 					</div>
-					<div className='dash-button'>
+					<div className='dash-button dash-bg dash-border dash-shadow'>
 						<p>■</p>
 					</div>
-					<div className='dash-button'>
+					<div className='dash-button dash-bg dash-border dash-shadow'>
 						<p>■</p>
 					</div>
 				</div>
 				{}
-				<div className='task-view-container'>
+				<div className='task-view-container dash-border dash-shadow'>
 					<CreateTaskList />
 					<CreateInprogressList />
 					<CreateCompleteList />
 				</div>
 			</div>
-			{/* <div className='metrics-view-container'></div> */}
+			{/* <div className='metrics-view-container dash-border dash-shadow'></div> */}
 		</div>
 	);
 }

@@ -1,8 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import tasks from '../../data/tasks.json';
-JSON.stringify(tasks);
-
 export default function CardButton({ task_id, statusSetter }) {
 	const [status, setStatus] = useState('open');
 

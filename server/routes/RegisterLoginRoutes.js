@@ -116,7 +116,7 @@ router.post(
 			});
 
 			res.status(201).json({
-				success: {
+				data: {
 					message: 'New user created!',
 					expire: ACCESS_TTL,
 					user: {
