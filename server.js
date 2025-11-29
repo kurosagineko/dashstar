@@ -1,11 +1,22 @@
 import authRoutes from './backend/routes/authRoutes.js';
 import express from 'express';
 import sequelize from './backend/config/db.js';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT;
+
+app.use(
+	cors({
+		credentials: true,
+		origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000',
+	})
+);
+app.use(express.json());
+app.use(cookieParser());
 
 app.use('/api', authRoutes);
 

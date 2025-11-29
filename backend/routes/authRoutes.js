@@ -1,7 +1,6 @@
 import express from 'express';
 import { Router } from 'express';
 import { Op } from 'sequelize';
-import cors from 'cors';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/indexModel.js';
@@ -13,9 +12,9 @@ dotenv.config();
 const router = Router();
 const BCRYPT_COST = parseInt(process.env.BCRYPT_COST) || 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
-const JWT_EXPIRES_IN = '2h';
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '2h';
+const ACCESS_TTL = parseInt(process.env.ACCESS_TOKEN_TTL, 10) || 7200;
 
-router.use(cors());
 router.use(express.json());
 
 function signToken(payload) {
@@ -108,11 +107,18 @@ router.post(
 				role: newUser.role,
 			});
 
+			res.cookie('token', token, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production', // true on prod
+				sameSite: 'strict',
+				maxAge: ACCESS_TTL * 1000,
+				path: '/',
+			});
+
 			res.status(201).json({
 				success: {
 					message: 'New user created!',
-					token,
-					expire: JWT_EXPIRES_IN,
+					expire: ACCESS_TTL,
 					user: {
 						id: newUser.id,
 						username: newUser.username,
@@ -147,6 +153,63 @@ router.post(
 				.status(500)
 				.json({ error: { message: 'Internal server error' } });
 		}
+	}
+);
+
+router.post(
+	'/login',
+	[
+		body('email')
+			.trim()
+			.notEmpty()
+			.withMessage('Email is required')
+			.isEmail()
+			.withMessage('Must be a valid email address')
+			.isLength({ max: 150 })
+			.withMessage('Email may be at most 150 characters'),
+
+		body('password')
+			.notEmpty()
+			.withMessage('Password is required')
+			.isLength({ min: 8 })
+			.withMessage('Password must be at least 8 characters'),
+	],
+	async (req, res) => {
+		const { email, password } = req.body;
+
+		const user = await User.findOne({ where: { email } });
+		if (!user)
+			return res
+				.status(401)
+				.json({ error: { message: 'No user with that email address' } });
+
+		const password_match = await bcrypt.compare(password, user.password_hash);
+		if (!password_match)
+			return res.status(401).json({ error: { message: 'Incorrect password' } });
+
+		const token = signToken({
+			id: user.id,
+			email: user.email,
+			role: user.role,
+		});
+
+		res.clearCookie('token');
+
+		res.cookie('token', token, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production',
+			sameSite: 'strict',
+			maxAge: ACCESS_TTL * 1000,
+			path: '/',
+		});
+
+		return res.status(200).json({
+			data: {
+				message: 'Login successful',
+				expiresIn: ACCESS_TTL,
+				user: { id: user.id, username: user.username, email: user.email },
+			},
+		});
 	}
 );
 
