@@ -4,9 +4,9 @@ import { Op } from 'sequelize';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { User } from '../models/index.js';
+import { User } from '../models/indexModel.js';
 import { query, body, param, validationResult } from 'express-validator';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate } from '../middleware/authenticate.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -119,9 +119,8 @@ router.post(
 						email: newUser.email,
 					},
 				},
-			}); // don't send the user details back for security
+			}); // don't send the user pass back for security
 		} catch (error) {
-			// Log the raw MySQL error (if any)
 			await transaction.rollback();
 			console.error('Register error:', error);
 			if (error.parent) {

@@ -1,13 +1,13 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/db.js';
-import TeamModel from './team.js';
-import TeamMemberModel from './teamMember.js';
-import UserModel from './user.js';
-import TaskModel from './task.js';
-import ScheduleModel from './schedule.js';
-import MessageModel from './message.js';
-import WorkspaceModel from './workspace.js';
-import UserWorkspaceModel from './userWorkspace.js';
+import TeamModel from './teamModel.js';
+import TeamMemberModel from './teamMemberModel.js';
+import UserModel from './userModel.js';
+import TaskModel from './taskModel.js';
+import ScheduleModel from './scheduleModel.js';
+import MessageModel from './messageModel.js';
+import WorkspaceModel from './workspaceModel.js';
+import UserWorkspaceModel from './userWorkspaceModel.js';
 
 const Team = TeamModel(sequelize, DataTypes);
 const TeamMember = TeamMemberModel(sequelize, DataTypes);
