@@ -1,4 +1,4 @@
-import authRoutes from './backend/routes/authRoutes.js';
+import RegisterLoginRoute from './backend/routes/RegisterLoginRoutes.js';
 import express from 'express';
 import sequelize from './backend/config/db.js';
 import cors from 'cors';
@@ -18,9 +18,8 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.use('/api', authRoutes);
+app.use('/api', RegisterLoginRoute);
 
-//Use this one for prod
 (async () => {
 	try {
 		await sequelize.authenticate();

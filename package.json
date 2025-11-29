@@ -10,7 +10,7 @@
 		"build": "vite build",
 		"lint": "eslint .",
 		"preview": "vite preview",
-		"migrate": "node scripts/migrate.cjs"
+		"createDB": "node scripts/createDB.cjs"
 	},
 	"dependencies": {
 		"@tailwindcss/vite": "^4.1.17",

@@ -5,15 +5,14 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/indexModel.js';
 import { query, body, param, validationResult } from 'express-validator';
-import { authenticate } from '../middleware/authenticate.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
 const router = Router();
 const BCRYPT_COST = parseInt(process.env.BCRYPT_COST) || 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '2h';
-const ACCESS_TTL = parseInt(process.env.ACCESS_TOKEN_TTL, 10) || 7200;
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '6h';
+const ACCESS_TTL = parseInt(process.env.ACCESS_TOKEN_TTL, 10) || 21600;
 
 router.use(express.json());
 
@@ -29,6 +28,7 @@ const validate = (req, res, next) => {
 	next();
 };
 
+// =========================== Register ============================
 router.post(
 	'/register',
 	[
@@ -156,6 +156,7 @@ router.post(
 	}
 );
 
+//=============================== Login =====================================
 router.post(
 	'/login',
 	[
