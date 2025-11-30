@@ -44,6 +44,7 @@ export default function Dashboard() {
 		// 		}
 		// 	}
 		// }
+
 		setLevel(state.fromLogin.level);
 		setUsername(state.fromLogin.username);
 	}, []);
@@ -70,54 +71,12 @@ export default function Dashboard() {
 		);
 	};
 
-	const CreateTaskList = () => {
+	const CreateTaskList = ({ title, list }) => {
 		return (
-			<TaskList title={'Tasks'}>
-				{taskList.length !== 0 ? (
+			<TaskList title={title}>
+				{list.length !== 0 ? (
 					<ul className='task-list dash-bg dash-border dash-shadow'>
-						{taskList.map(task => (
-							<li key={task.id}>
-								<TaskCard
-									task_id={task.id}
-									title={task.title}
-									desc={task.desc}
-								/>
-							</li>
-						))}
-					</ul>
-				) : (
-					<TaskListPlaceHolder />
-				)}
-			</TaskList>
-		);
-	};
-	const CreateInprogressList = () => {
-		return (
-			<TaskList title={'In-progress'}>
-				{inprogressList.length !== 0 ? (
-					<ul className='task-list dash-bg dash-border dash-shadow'>
-						{inprogressList.map(task => (
-							<li key={task.id}>
-								<TaskCard
-									task_id={task.id}
-									title={task.title}
-									desc={task.desc}
-								/>
-							</li>
-						))}
-					</ul>
-				) : (
-					<TaskListPlaceHolder />
-				)}
-			</TaskList>
-		);
-	};
-	const CreateCompleteList = () => {
-		return (
-			<TaskList title={'Complete'}>
-				{completeList.length !== 0 ? (
-					<ul className='task-list dash-bg dash-border dash-shadow'>
-						{completeList.map(task => (
+						{list.map(task => (
 							<li key={task.id}>
 								<TaskCard
 									task_id={task.id}
@@ -184,9 +143,18 @@ export default function Dashboard() {
 				</div>
 				{}
 				<div className='task-view-container dash-border dash-shadow'>
-					<CreateTaskList />
-					<CreateInprogressList />
-					<CreateCompleteList />
+					<CreateTaskList
+						title='Tasks'
+						list={taskList}
+					/>
+					<CreateTaskList
+						title='In-progress'
+						list={inprogressList}
+					/>
+					<CreateTaskList
+						title='Complete'
+						list={completeList}
+					/>
 				</div>
 			</div>
 			{/* <div className='metrics-view-container dash-border dash-shadow'></div> */}
