@@ -3,6 +3,7 @@ import { useState, useContext, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import TaskCard from '../components/TaskCard';
 import TaskList from '../components/TaskList';
+import TeamIconButton from '../components/TeamIconButton';
 import './CSS/dashboard.css';
 
 import avatarDefault from '../assets/avatardefault.svg';
@@ -18,6 +19,7 @@ export default function Dashboard() {
 	const [taskList, setTaskList] = useState([]);
 	const [inprogressList, setInprogressList] = useState([]);
 	const [completeList, setCompleteList] = useState([]);
+	const [currentBoard, setCurrentBoard] = useState('Personal');
 
 	useEffect(() => {
 		// populate the task lists on load
@@ -72,9 +74,12 @@ export default function Dashboard() {
 		);
 	};
 
-	const CreateTaskList = ({ title, list }) => {
+	const CreateTaskList = ({ title, list, showCreateBtn }) => {
 		return (
-			<TaskList title={title}>
+			<TaskList
+				title={title}
+				showCreateBtn={showCreateBtn}
+			>
 				{list.length !== 0 ? (
 					<ul className='task-list dash-bg dash-border dash-shadow'>
 						{list.map(task => (
@@ -103,7 +108,11 @@ export default function Dashboard() {
 						alt='Open menu icon'
 					/>
 				</div>
+
 				<button onClick={() => logout()}>Logout</button>
+
+				<h2 style={{ fontSize: '2rem' }}>{currentBoard}</h2>
+
 				<div className='widgets'>
 					<div className='level-widget dash-bg dash-border dash-shadow'>
 						<div className='current-level'>
@@ -130,11 +139,28 @@ export default function Dashboard() {
 			<div className='dash-main'>
 				{/* Add images for buttons here with onClick functionality */}
 				<div className='dash-buttons dash-border dash-shadow'>
-					<div className='dash-button dash-bg dash-border dash-shadow'>
-						<p>■</p>
+					<div
+						className='team-buttons-alignment'
+						style={{ marginBottom: '40px' }}
+					>
+						<TeamIconButton
+							teamName={'Personal'}
+							icon='🏠'
+						/>
 					</div>
-					<div className='dash-button dash-bg dash-border dash-shadow'>
-						<p>■</p>
+					<div className='team-buttons-alignment'>
+						<TeamIconButton
+							teamName={'Create Team'}
+							icon='+'
+							fontSize={'2rem'}
+							onClickHandler={() => console.log('click')}
+						/>
+					</div>
+					<div className='team-buttons-alignment'>
+						<TeamIconButton
+							teamName={'Alpha Squad'}
+							icon='▶'
+						/>
 					</div>
 					<div className='dash-button dash-bg dash-border dash-shadow'>
 						<p>■</p>
@@ -148,6 +174,7 @@ export default function Dashboard() {
 					<CreateTaskList
 						title='Tasks'
 						list={taskList}
+						showCreateBtn={true}
 					/>
 					<CreateTaskList
 						title='In-progress'
