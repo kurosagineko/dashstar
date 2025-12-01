@@ -11,7 +11,7 @@ import {
 	TeamMember,
 	Task,
 } from '../models/indexModel.js';
-import { uniqueWorkspaceCode } from '../scripts/util.js';
+import uniqueWorkspaceCode from '../scripts/util.js';
 import { query, body, param, validationResult } from 'express-validator';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -154,33 +154,33 @@ router.post(
 				{ transaction }
 			);
 
-			// create Workspace entry by default with randomized unique code and assign the users id as the admin_user_id
-			const defaultWorkspace = await Workspace.create({
-				code: uniqueWorkspaceCode(25),
-				admin_user_id: newUser.id,
-			});
+			// // create Workspace entry by default with randomized unique code and assign the users id as the admin_user_id
+			// const defaultWorkspace = await Workspace.create({
+			// 	code: 'abc',
+			// 	admin_user_id: newUser.id,
+			// });
 
-			// add created Workspace to a UserWorkspace entry with the created Workspace id as the workspace_id, add the users id as user_id
-			const defaultUserWorkspace = await UserWorkspace.create({
-				user_id: newUser.id,
-				workspace_id: defaultWorkspace.id,
-				role: 'admin',
-			});
+			// // add created Workspace to a UserWorkspace entry with the created Workspace id as the workspace_id, add the users id as user_id
+			// const defaultUserWorkspace = await UserWorkspace.create({
+			// 	user_id: newUser.id,
+			// 	workspace_id: defaultWorkspace.id,
+			// 	role: 'admin',
+			// });
 
-			// Create default team entry on Teams called *personal* with the created Workspace id as the workspace_id and the admin_user id as the users id
-			const defaultTeam = await Team.create({
-				workspace_id: defaultUserWorkspace.id,
-				name: 'personal',
-				admin_user_id: newUser.id,
-			});
+			// // Create default team entry on Teams called *personal* with the created Workspace id as the workspace_id and the admin_user id as the users id
+			// const defaultTeam = await Team.create({
+			// 	workspace_id: defaultUserWorkspace.id,
+			// 	name: 'personal',
+			// 	admin_user_id: newUser.id,
+			// });
 
-			// Create a TeamMembers entry with the personal teams id as the team_id and the users id as user_id
-			const defaultTeamMembers = await TeamMember.create({
-				team_id: defaultTeam.id,
-				user_id: newUser.id,
-			});
+			// // Create a TeamMembers entry with the personal teams id as the team_id and the users id as user_id
+			// const defaultTeamMembers = await TeamMember.create({
+			// 	team_id: defaultTeam.id,
+			// 	user_id: newUser.id,
+			// });
 
-			const sampleTask = await Task.create({});
+			// const sampleTask = await Task.create({});
 
 			await transaction.commit();
 

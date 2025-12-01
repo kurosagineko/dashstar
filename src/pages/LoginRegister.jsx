@@ -6,6 +6,7 @@ import './CSS/loginregister.css';
 
 export default function LoginRegister() {
 	const { state } = useLocation();
+	console.log('state:', state);
 	const { login } = useAuth();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -39,7 +40,6 @@ export default function LoginRegister() {
 
 	const handleOnChange = e => {
 		const { name, value } = e.target;
-		console.log('e.target:', e.target.value);
 
 		if (state?.fromLandingBtn === 'login') {
 			setFormDataLogin({
@@ -81,6 +81,7 @@ export default function LoginRegister() {
 		}
 
 		const responseData = await response.json();
+		console.log('responseData:', responseData);
 		const status = response.status;
 
 		if (status === 200 || status === 201) {
@@ -95,7 +96,7 @@ export default function LoginRegister() {
 						replace: true,
 				  });
 		} else {
-			setMsg(data.error.message);
+			setMsg(responseData.error.message);
 		}
 	};
 

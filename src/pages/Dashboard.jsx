@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useState, useContext, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import TaskCard from '../components/TaskCard';
@@ -156,17 +156,19 @@ export default function Dashboard() {
 						<p>XP To Next: {nextXp}</p>
 						<p>XP This session: {xPSession}</p>
 					</div>
-					<div className='profile-widget dash-bg dash-border dash-shadow'>
-						<div className='user-info'>
-							<p>{username}</p>
+					<Link to='/profile'>
+						<div className='profile-widget dash-bg dash-border dash-shadow'>
+							<div className='user-info'>
+								<p>{username}</p>
+							</div>
+							<div className='profile-pic'>
+								<img
+									src={avatarDefault}
+									alt='user profile picture'
+								/>
+							</div>
 						</div>
-						<div className='profile-pic'>
-							<img
-								src={avatarDefault}
-								alt='user profile picture'
-							/>
-						</div>
-					</div>
+					</Link>
 				</div>
 			</div>
 			{}
