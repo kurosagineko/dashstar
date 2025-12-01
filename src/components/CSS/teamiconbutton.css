@@ -3,6 +3,7 @@
 }
 
 .team-name-popup {
+  z-index: 2;
 	opacity: 1;
 	transform: scale(1);
 	transition: opacity 0.3s ease, transform 0.3s ease;

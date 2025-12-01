@@ -9,6 +9,17 @@ import './CSS/dashboard.css';
 import avatarDefault from '../assets/avatardefault.svg';
 import burgerMenuIcon from '../assets/BurgerMenuIcon.png';
 
+const exampleTask = {
+	id: 0,
+	team_id: 0,
+	create_by_user_id: 2,
+	task_name: 'Check for bugs',
+	task_desc: 'Make sure server.js runs without errors',
+	date_due: null,
+	status: 'open',
+	task_xp: 10,
+};
+
 export default function Dashboard() {
 	const { user, logout } = useAuth();
 	const [level, setLevel] = useState(0);
@@ -50,7 +61,29 @@ export default function Dashboard() {
 		setLevel(user.level);
 		setTotalXp(user.xp);
 		setUsername(user.username);
+
+		//example task
+		setTaskList([exampleTask]);
 	}, []);
+
+	const createNewTask = task => {
+		if (!task.task_name || !task.task_desc) {
+			console.log('Task must have a name and a short description');
+			return;
+		}
+
+		setTaskList([...taskList, task]);
+	};
+
+	const populateTeamIconButtons = () => {};
+
+	const showCreateTaskModal = () => {};
+
+	const showCreateNewTeamModal = () => {};
+
+	const switchDashboard = () => {};
+
+	const populateLists = () => {};
 
 	const TaskListPlaceHolder = () => {
 		const placeholderStyle = {
@@ -79,6 +112,7 @@ export default function Dashboard() {
 			<TaskList
 				title={title}
 				showCreateBtn={showCreateBtn}
+				onClickHandler={() => createNewTask(exampleTask)}
 			>
 				{list.length !== 0 ? (
 					<ul className='task-list dash-bg dash-border dash-shadow'>
@@ -86,8 +120,8 @@ export default function Dashboard() {
 							<li key={task.id}>
 								<TaskCard
 									task_id={task.id}
-									title={task.title}
-									desc={task.desc}
+									title={task.task_name}
+									desc={task.task_desc}
 								/>
 							</li>
 						))}

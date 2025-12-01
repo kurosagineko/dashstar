@@ -5,16 +5,16 @@ export default function CardButton({ task_id, statusSetter }) {
 
 	useEffect(() => {
 		statusSetter(status);
-		console.log('list after state change (via useEffect):', status);
+		// console.log('list after state change (via useEffect):', status);
 
-		const newData = tasks.map(element => {
-			if (element.id === task_id) {
-				return { ...element, status: status };
-			}
-			return element;
-		});
-		console.log('newData:', newData);
-		console.log('taskData', tasks);
+		// const newData = tasks.map(element => {
+		// 	if (element.id === task_id) {
+		// 		return { ...element, status: status };
+		// 	}
+		// 	return element;
+		// });
+		// console.log('newData:', newData);
+		// console.log('taskData', tasks);
 	}, [status, statusSetter]);
 
 	const ButtonStyle = {
