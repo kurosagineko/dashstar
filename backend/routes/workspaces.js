@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import crypto from 'crypto';
 import { authenticate } from '../middleware/auth.js';
-import { requireWorkspaceRole, ensureWorkspaceOwner } from '../middleware/workspaceAuth.js';
+import { requireWorkspaceRole } from '../middleware/workspaceAuth.js';
 import { Workspace, WorkspaceUser, User } from '../models/index.js';
 
 const router = Router();
@@ -11,11 +11,22 @@ function generateJoinCode() {
 }
 
 router.post('/workspaces', authenticate, async (req, res) => {
-	const { name } = req.body;
+	const { name, workspace_code } = req.body;
 	if (!name) return res.status(400).json({ message: 'Workspace name required' });
 	try {
-		const workspace = await Workspace.create({ name, owner_user_id: req.user.id, join_code: generateJoinCode() });
-		await WorkspaceUser.create({ workspace_id: workspace.id, user_id: req.user.id, role: 'owner' });
+		const code = workspace_code || generateJoinCode();
+		const workspace = await Workspace.create({
+			name,
+			workspace_code: code,
+			owner_user_id: req.user.id,
+			join_code: generateJoinCode(),
+		});
+		await WorkspaceUser.create({
+			workspace_id: workspace.id,
+			workspace_code: workspace.workspace_code,
+			user_id: req.user.id,
+			role: 'admin',
+		});
 		return res.status(201).json(workspace);
 	} catch (err) {
 		console.error(err);
@@ -34,15 +45,20 @@ router.post('/workspaces/join', authenticate, async (req, res) => {
 		}
 		const existing = await WorkspaceUser.findOne({ where: { workspace_id: workspace.id, user_id: req.user.id } });
 		if (existing) return res.status(409).json({ message: 'Already a member of this workspace' });
-		await WorkspaceUser.create({ workspace_id: workspace.id, user_id: req.user.id, role: 'member' });
-		return res.status(201).json({ workspace_id: workspace.id, name: workspace.name });
+		await WorkspaceUser.create({
+			workspace_id: workspace.id,
+			workspace_code: workspace.workspace_code,
+			user_id: req.user.id,
+			role: 'user',
+		});
+		return res.status(201).json({ workspace_id: workspace.id, workspace_code: workspace.workspace_code, name: workspace.name });
 	} catch (err) {
 		console.error(err);
 		return res.status(500).json({ message: 'Join workspace failed' });
 	}
 });
 
-router.post('/workspaces/:workspaceId/rotate-join-code', authenticate, requireWorkspaceRole(['owner']), async (req, res) => {
+router.post('/workspaces/:workspaceId/rotate-join-code', authenticate, requireWorkspaceRole(['admin']), async (req, res) => {
 	const { workspaceId } = req.params;
 	try {
 		const workspace = await Workspace.findByPk(workspaceId);
@@ -55,17 +71,24 @@ router.post('/workspaces/:workspaceId/rotate-join-code', authenticate, requireWo
 	}
 });
 
-router.post('/workspaces/:workspaceId/users', authenticate, requireWorkspaceRole(['owner']), async (req, res) => {
+router.post('/workspaces/:workspaceId/users', authenticate, requireWorkspaceRole(['admin']), async (req, res) => {
 	const { workspaceId } = req.params;
-	const { userId, role = 'member' } = req.body;
+	const { userId, role = 'user' } = req.body;
 	if (!userId) return res.status(400).json({ message: 'userId required' });
-	if (!['admin', 'member'].includes(role)) return res.status(400).json({ message: 'Invalid role' });
+	if (!['admin', 'user'].includes(role)) return res.status(400).json({ message: 'Invalid role' });
 	try {
 		const user = await User.findOne({ where: { id: userId, deleted_at: null } });
 		if (!user) return res.status(404).json({ message: 'User not found' });
 		const membership = await WorkspaceUser.findOne({ where: { workspace_id: workspaceId, user_id: userId } });
 		if (membership) return res.status(409).json({ message: 'User already in workspace' });
-		await WorkspaceUser.create({ workspace_id: workspaceId, user_id: userId, role });
+		const workspace = await Workspace.findByPk(workspaceId);
+		if (!workspace) return res.status(404).json({ message: 'Workspace not found' });
+		await WorkspaceUser.create({
+			workspace_id: workspaceId,
+			workspace_code: workspace.workspace_code,
+			user_id: userId,
+			role,
+		});
 		return res.status(201).json({ message: 'User added to workspace' });
 	} catch (err) {
 		console.error(err);
@@ -73,7 +96,7 @@ router.post('/workspaces/:workspaceId/users', authenticate, requireWorkspaceRole
 	}
 });
 
-router.get('/workspaces/:workspaceId/users', authenticate, requireWorkspaceRole(['owner', 'admin']), async (req, res) => {
+router.get('/workspaces/:workspaceId/users', authenticate, requireWorkspaceRole(['admin']), async (req, res) => {
 	const { workspaceId } = req.params;
 	try {
 		const members = await WorkspaceUser.findAll({ where: { workspace_id: workspaceId } });

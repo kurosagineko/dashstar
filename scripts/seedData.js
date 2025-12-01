@@ -1,3 +1,4 @@
+import process from 'process';
 import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
@@ -56,7 +57,9 @@ async function seed() {
 
 	const ownerEmail = ownerData.email.toLowerCase();
 	const ownerUsername = ownerEmail.split('@')[0];
-	const ownerPasswordHash = await bcrypt.hash(ownerData.password, 10);
+	const ownerPasswordHash = ownerData.password_hash
+		? ownerData.password_hash
+		: await bcrypt.hash(ownerData.password, 10);
 
 	const [owner] = await User.findOrCreate({
 		where: { email: ownerEmail },
@@ -75,19 +78,33 @@ async function seed() {
 
 	const [workspace] = await Workspace.findOrCreate({
 		where: { join_code: WORKSPACE_CODE },
-		defaults: { name: 'Default Workspace', owner_user_id: owner.id, join_code: WORKSPACE_CODE },
+		defaults: {
+			name: 'Default Workspace',
+			owner_user_id: owner.id,
+			join_code: WORKSPACE_CODE,
+			workspace_code: WORKSPACE_CODE,
+		},
 	});
 
 	await WorkspaceUser.findOrCreate({
 		where: { workspace_id: workspace.id, user_id: owner.id },
-		defaults: { role: 'owner' },
+		defaults: { role: 'admin', workspace_code: workspace.workspace_code },
 	});
 
 	const teamMap = new Map();
 	for (const t of teamsData) {
 		const [team] = await Team.findOrCreate({
-			where: { workspace_id: workspace.id, name: t.team_name },
-			defaults: { description: null, manager_name: null },
+			where: { workspace_id: workspace.id, team_name: t.team_name },
+			defaults: {
+				workspace_id: workspace.id,
+				workspace_code: workspace.workspace_code,
+				team_name: t.team_name,
+				name: t.team_name,
+				description: t.description || null,
+				manager_name: t.manager_name || null,
+				user_id_list: t.user_id_list || null,
+				admin_id: t.admin_id || null,
+			},
 		});
 		teamMap.set(parseInt(t.id, 10), team.id);
 	}
@@ -96,7 +113,7 @@ async function seed() {
 		if (userMap.has(parseInt(u.id, 10))) continue;
 		const email = u.email.toLowerCase();
 		const username = email.split('@')[0];
-		const password_hash = await bcrypt.hash(u.password, 10);
+		const password_hash = u.password_hash ? u.password_hash : await bcrypt.hash(u.password, 10);
 
 		const [user] = await User.findOrCreate({
 			where: { email },
@@ -115,7 +132,7 @@ async function seed() {
 
 		await WorkspaceUser.findOrCreate({
 			where: { workspace_id: workspace.id, user_id: user.id },
-			defaults: { role: u.role === 'admin' ? 'admin' : 'member' },
+			defaults: { role: u.role === 'admin' ? 'admin' : 'user', workspace_code: workspace.workspace_code },
 		});
 	}
 
@@ -140,11 +157,16 @@ async function seed() {
 			where: { workspace_id: workspace.id, title: t.title },
 			defaults: {
 				workspace_id: workspace.id,
+				workspace_code: workspace.workspace_code,
 				team_id: teamId,
 				title: t.title,
-				description: t.desc || null,
+				desc: t.desc || null,
+				description: t.description || t.desc || null,
 				status: mappedStatus,
-				xp_reward: parseInt(t.task_xp, 10) || 10,
+				task_xp: parseInt(t.task_xp, 10) || 0,
+				xp_reward: parseInt(t.task_xp, 10) || 0,
+				date_created: t.date_created || null,
+				date_due: t.date_due || null,
 				due_date: parseDateString(t.date_due),
 				created_by: owner.id,
 			},
@@ -172,10 +194,14 @@ async function seed() {
 			where: { workspace_id: workspace.id, recipient_team_id: teamId, body: m.content },
 			defaults: {
 				workspace_id: workspace.id,
+				workspace_code: workspace.workspace_code,
+				team_id: teamId,
 				sender_id: senderId,
 				recipient_team_id: teamId,
 				subject: 'Message',
 				body: m.content,
+				content: m.content,
+				date_created: m.date_created || null,
 				status: 'sent',
 			},
 		});
@@ -188,12 +214,17 @@ async function seed() {
 			where: { workspace_id: workspace.id, target_team_id: teamId, title: s.message },
 			defaults: {
 				workspace_id: workspace.id,
+				workspace_code: workspace.workspace_code,
+				team_id: teamId,
 				target_team_id: teamId,
 				target_user_id: null,
 				title: s.message || 'Schedule',
 				description: s.message || null,
-				start_at: new Date(),
-				end_at: null,
+				message: s.message || null,
+				time_start: s.time_start || null,
+				time_end: s.time_end || null,
+				start_at: parseDateString(s.time_start) || new Date(),
+				end_at: parseDateString(s.time_end) || null,
 				status: 'planned',
 				created_by: creatorId,
 			},

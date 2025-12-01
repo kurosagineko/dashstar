@@ -1,4 +1,5 @@
 import 'dotenv/config';
+/* global process */
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
@@ -14,7 +15,7 @@ export function authenticate(req, res, next) {
 		const payload = jwt.verify(token, JWT_SECRET);
 		req.user = { id: payload.id };
 		return next();
-	} catch (err) {
+	} catch {
 		return res.status(401).json({ message: 'Invalid token' });
 	}
 }

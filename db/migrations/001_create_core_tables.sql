@@ -4,9 +4,13 @@ USE dashstar_db;
 CREATE TABLE IF NOT EXISTS teams (
   id INT AUTO_INCREMENT PRIMARY KEY,
   workspace_id INT NOT NULL,
-  name VARCHAR(100) NOT NULL,
+  workspace_code VARCHAR(64) NOT NULL,
+  team_name VARCHAR(150) NOT NULL,
+  name VARCHAR(150) NULL,
   description TEXT NULL,
   manager_name VARCHAR(150) NULL,
+  user_id_list TEXT NULL,
+  admin_id INT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP NULL
@@ -15,6 +19,10 @@ CREATE TABLE IF NOT EXISTS teams (
 CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   team_id INT NULL,
+  workspace_code VARCHAR(64) NULL,
+  current_tasks TEXT NULL,
+  numTasksCompleted INT NOT NULL DEFAULT 0,
+  pfp VARCHAR(255) NULL,
   username VARCHAR(50) NOT NULL UNIQUE,
   name VARCHAR(100) NOT NULL,
   email VARCHAR(150) NOT NULL UNIQUE,
@@ -37,13 +45,18 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS tasks (
   id INT AUTO_INCREMENT PRIMARY KEY,
   workspace_id INT NOT NULL,
+  workspace_code VARCHAR(64) NOT NULL,
   team_id INT NULL,
   title VARCHAR(150) NOT NULL,
+  desc TEXT,
   description TEXT,
-  status ENUM('open','published','inprogress','complete') NOT NULL DEFAULT 'open',
-  xp_reward INT NOT NULL DEFAULT 10,
+  status ENUM('open','inprogress','complete') NOT NULL DEFAULT 'open',
+  task_xp INT NOT NULL DEFAULT 0,
+  xp_reward INT NOT NULL DEFAULT 0,
+  date_created VARCHAR(50) NULL,
+  date_due VARCHAR(50) NULL,
   due_date DATETIME NULL,
-  created_by INT NOT NULL,
+  created_by INT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP NULL,
@@ -96,14 +109,19 @@ CREATE TABLE IF NOT EXISTS xp_events (
 CREATE TABLE IF NOT EXISTS schedules (
   id INT AUTO_INCREMENT PRIMARY KEY,
   workspace_id INT NOT NULL,
-  title VARCHAR(150) NOT NULL,
+  workspace_code VARCHAR(64) NOT NULL,
+  team_id INT NULL,
+  title VARCHAR(150) NULL,
+  message TEXT NULL,
   description TEXT NULL,
-  start_at DATETIME NOT NULL,
+  time_start VARCHAR(50) NULL,
+  time_end VARCHAR(50) NULL,
+  start_at DATETIME NULL,
   end_at DATETIME NULL,
   status ENUM('planned','active','completed','cancelled') NOT NULL DEFAULT 'planned',
   target_team_id INT NULL,
   target_user_id INT NULL,
-  created_by INT NOT NULL,
+  created_by INT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_schedule_team FOREIGN KEY (target_team_id) REFERENCES teams(id),
@@ -114,11 +132,15 @@ CREATE TABLE IF NOT EXISTS schedules (
 CREATE TABLE IF NOT EXISTS messages (
   id INT AUTO_INCREMENT PRIMARY KEY,
   workspace_id INT NOT NULL,
-  sender_id INT NOT NULL,
+  workspace_code VARCHAR(64) NOT NULL,
+  team_id INT NULL,
+  sender_id INT NULL,
   recipient_user_id INT NULL,
   recipient_team_id INT NULL,
-  subject VARCHAR(150) NOT NULL,
-  body TEXT NOT NULL,
+  subject VARCHAR(150) NULL,
+  body TEXT NULL,
+  content TEXT NULL,
+  date_created VARCHAR(50) NULL,
   status ENUM('draft','sent') NOT NULL DEFAULT 'sent',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -129,6 +151,7 @@ CREATE TABLE IF NOT EXISTS messages (
 
 CREATE TABLE IF NOT EXISTS workspaces (
   id INT AUTO_INCREMENT PRIMARY KEY,
+  workspace_code VARCHAR(64) NOT NULL,
   name VARCHAR(150) NOT NULL,
   owner_user_id INT NOT NULL,
   join_code VARCHAR(64) NULL,
@@ -141,8 +164,9 @@ CREATE TABLE IF NOT EXISTS workspaces (
 CREATE TABLE IF NOT EXISTS workspace_users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   workspace_id INT NOT NULL,
+  workspace_code VARCHAR(64) NOT NULL,
   user_id INT NOT NULL,
-  role ENUM('owner','admin','member') NOT NULL DEFAULT 'member',
+  role ENUM('admin','user') NOT NULL DEFAULT 'user',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_workspace_users_workspace FOREIGN KEY (workspace_id) REFERENCES workspaces(id),
@@ -150,11 +174,16 @@ CREATE TABLE IF NOT EXISTS workspace_users (
   CONSTRAINT uniq_workspace_user UNIQUE (workspace_id, user_id)
 );
 
+ALTER TABLE workspaces
+  ADD UNIQUE INDEX uniq_workspaces_code (workspace_code),
+  ADD UNIQUE INDEX uniq_workspaces_join_code (join_code);
+
 ALTER TABLE teams
   ADD CONSTRAINT fk_teams_workspace FOREIGN KEY (workspace_id) REFERENCES workspaces(id);
 
 ALTER TABLE teams
-  ADD CONSTRAINT uniq_team_workspace UNIQUE (workspace_id, name);
+  ADD INDEX idx_teams_workspace_code (workspace_code),
+  ADD INDEX idx_teams_workspace_name (workspace_id, team_name);
 
 ALTER TABLE tasks
   ADD CONSTRAINT fk_tasks_workspace FOREIGN KEY (workspace_id) REFERENCES workspaces(id);
@@ -162,12 +191,18 @@ ALTER TABLE tasks
   ADD CONSTRAINT fk_tasks_team FOREIGN KEY (team_id) REFERENCES teams(id);
 ALTER TABLE tasks
   ADD INDEX idx_tasks_workspace_team (workspace_id, team_id);
+ALTER TABLE tasks
+  ADD INDEX idx_tasks_workspace_code (workspace_code);
 
 ALTER TABLE schedules
   ADD CONSTRAINT fk_schedules_workspace FOREIGN KEY (workspace_id) REFERENCES workspaces(id);
+ALTER TABLE schedules
+  ADD INDEX idx_schedules_workspace_code (workspace_code);
 
 ALTER TABLE messages
   ADD CONSTRAINT fk_messages_workspace FOREIGN KEY (workspace_id) REFERENCES workspaces(id);
+ALTER TABLE messages
+  ADD INDEX idx_messages_workspace_code (workspace_code);
 
-ALTER TABLE workspaces
-  ADD UNIQUE INDEX uniq_workspaces_join_code (join_code);
+ALTER TABLE workspace_users
+  ADD INDEX idx_workspace_users_code (workspace_code);

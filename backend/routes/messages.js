@@ -5,9 +5,19 @@ import { requireWorkspaceMember, requireWorkspaceRole } from '../middleware/work
 
 const router = Router();
 
-router.post('/admin/messages', authenticate, requireWorkspaceRole(['owner', 'admin']), async (req, res) => {
-	const { recipient_user_id, recipient_team_id, subject, body, status = 'sent' } = req.body;
-	if (!subject || !body) return res.status(400).json({ message: 'subject and body required' });
+router.post('/admin/messages', authenticate, requireWorkspaceRole(['admin']), async (req, res) => {
+	const {
+		recipient_user_id,
+		recipient_team_id,
+		subject,
+		body,
+		content,
+		status = 'sent',
+		team_id,
+		date_created,
+		sender_id,
+	} = req.body;
+	if (!content && (!subject || !body)) return res.status(400).json({ message: 'content or subject/body required' });
 	try {
 		if (recipient_user_id) {
 			const user = await User.findOne({ where: { id: recipient_user_id, deleted_at: null } });
@@ -19,11 +29,15 @@ router.post('/admin/messages', authenticate, requireWorkspaceRole(['owner', 'adm
 		}
 		const message = await Message.create({
 			workspace_id: req.workspaceId,
-			sender_id: req.user.id,
+			workspace_code: req.workspaceCode,
+			team_id: team_id || null,
+			sender_id: sender_id || req.user.id || null,
 			recipient_user_id: recipient_user_id || null,
 			recipient_team_id: recipient_team_id || null,
-			subject,
-			body,
+			subject: subject || null,
+			body: body || content || null,
+			content: content || body || null,
+			date_created: date_created || null,
 			status,
 		});
 		return res.status(201).json(message);

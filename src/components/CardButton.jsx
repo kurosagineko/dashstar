@@ -18,7 +18,7 @@ export default function CardButton({ task_id, statusSetter }) {
 		});
 		console.log('newData:', newData);
 		console.log('taskData', tasks);
-	}, [status, statusSetter]);
+	}, [status, statusSetter, task_id]);
 
 	const ButtonStyle = {
 		assign: {

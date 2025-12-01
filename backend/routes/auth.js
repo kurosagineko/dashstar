@@ -1,3 +1,4 @@
+import process from 'process';
 import 'dotenv/config';
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
@@ -35,38 +36,61 @@ router.post(
 	validate,
 	async (req, res) => {
 		const { username, name, email, password } = req.body;
-	try {
-		const existing = await User.findOne({ where: { email } });
-		if (existing) return res.status(409).json({ message: 'Email already in use' });
+		try {
+			const existing = await User.findOne({ where: { email } });
+			if (existing) return res.status(409).json({ message: 'Email already in use' });
 
-		const password_hash = await bcrypt.hash(password, 10);
-		const user = await User.create({ username, name, email, password_hash, role: 'user' });
-		const token = signToken(user);
-		return res.status(201).json({ token, expiresIn: JWT_EXPIRES_IN, user: { id: user.id, username, email } });
-	} catch (err) {
-		console.error(err);
-		return res.status(500).json({ message: 'Registration failed' });
-	}
+			const password_hash = await bcrypt.hash(password, 10);
+			const user = await User.create({ username, name, email, password_hash, role: 'user' });
+			const token = signToken(user);
+			return res.status(201).json({ token, expiresIn: JWT_EXPIRES_IN, user: { id: user.id, username, email } });
+		} catch (err) {
+			console.error(err);
+			return res.status(500).json({ message: 'Registration failed' });
+		}
 	}
 );
 
 router.post(
 	'/login',
-	[body('email').isEmail(), body('password').notEmpty()],
+	[
+		body('identifier')
+			.notEmpty()
+			.bail()
+			.custom(val => {
+				if (typeof val !== 'string') return false;
+				if (val.includes('@')) {
+					return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+				}
+				return val.trim().length > 0;
+			})
+			.withMessage('Invalid identifier'),
+		body('password').notEmpty(),
+	],
 	validate,
 	async (req, res) => {
-		const { email, password } = req.body;
-	try {
-		const user = await User.findOne({ where: { email } });
-		if (!user) return res.status(401).json({ message: 'Invalid credentials' });
-		const valid = await bcrypt.compare(password, user.password_hash);
-		if (!valid) return res.status(401).json({ message: 'Invalid credentials' });
-		const token = signToken(user);
-		return res.json({ token, expiresIn: JWT_EXPIRES_IN, user: { id: user.id, username: user.username, email } });
-	} catch (err) {
-		console.error(err);
-		return res.status(500).json({ message: 'Login failed' });
-	}
+		const { identifier, password } = req.body;
+		try {
+			let user = null;
+			if (identifier.includes('@')) {
+				user = await User.findOne({ where: { email: identifier } });
+			}
+			if (!user) {
+				user = await User.findOne({ where: { username: identifier } });
+			}
+			if (!user) return res.status(401).json({ message: 'Invalid credentials' });
+			const valid = await bcrypt.compare(password, user.password_hash);
+			if (!valid) return res.status(401).json({ message: 'Invalid credentials' });
+			const token = signToken(user);
+			return res.json({
+				token,
+				expiresIn: JWT_EXPIRES_IN,
+				user: { id: user.id, username: user.username, email: user.email },
+			});
+		} catch (err) {
+			console.error(err);
+			return res.status(500).json({ message: 'Login failed' });
+		}
 	}
 );
 

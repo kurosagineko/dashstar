@@ -1,3 +1,4 @@
+import process from 'process';
 import 'dotenv/config';
 import { Sequelize } from 'sequelize';
 

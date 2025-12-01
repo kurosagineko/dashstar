@@ -3,6 +3,7 @@ export default (sequelize, DataTypes) =>
 		'workspaces',
 		{
 			id: { type: DataTypes.INTEGER, allowNull: false, autoIncrement: true, primaryKey: true },
+			workspace_code: { type: DataTypes.STRING(64), allowNull: false, unique: true },
 			name: { type: DataTypes.STRING(150), allowNull: false },
 			owner_user_id: { type: DataTypes.INTEGER, allowNull: false, references: { model: 'users', key: 'id' } },
 			join_code: { type: DataTypes.STRING(64), allowNull: true, unique: true },

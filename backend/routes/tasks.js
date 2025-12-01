@@ -5,8 +5,8 @@ import { requireWorkspaceRole, requireWorkspaceMember } from '../middleware/work
 
 const router = Router();
 
-router.post('/admin/tasks', authenticate, requireWorkspaceRole(['owner', 'admin']), async (req, res) => {
-	const { title, description, xp_reward, due_date, status = 'open', team_id } = req.body;
+router.post('/admin/tasks', authenticate, requireWorkspaceRole(['admin']), async (req, res) => {
+	const { title, desc, description, task_xp, xp_reward, date_created, date_due, status = 'open', team_id, created_by } = req.body;
 	if (!title) return res.status(400).json({ message: 'Title required' });
 	if (!team_id) return res.status(400).json({ message: 'team_id required' });
 	try {
@@ -14,13 +14,18 @@ router.post('/admin/tasks', authenticate, requireWorkspaceRole(['owner', 'admin'
 		if (!team) return res.status(404).json({ message: 'Team not found' });
 		const task = await Task.create({
 			workspace_id: req.workspaceId,
+			workspace_code: req.workspaceCode,
 			team_id,
 			title,
-			description,
-			xp_reward: xp_reward ?? 10,
-			due_date: due_date || null,
+			desc: desc ?? description ?? null,
+			description: description ?? desc ?? null,
+			task_xp: task_xp ?? xp_reward ?? 0,
+			xp_reward: xp_reward ?? task_xp ?? 0,
+			date_created: date_created || null,
+			date_due: date_due || null,
+			due_date: date_due || null,
 			status,
-			created_by: req.user.id,
+			created_by: created_by || req.user.id || null,
 		});
 		return res.status(201).json(task);
 	} catch (err) {
@@ -29,9 +34,9 @@ router.post('/admin/tasks', authenticate, requireWorkspaceRole(['owner', 'admin'
 	}
 });
 
-router.put('/admin/tasks/:taskId', authenticate, requireWorkspaceRole(['owner', 'admin']), async (req, res) => {
+router.put('/admin/tasks/:taskId', authenticate, requireWorkspaceRole(['admin']), async (req, res) => {
 	const { taskId } = req.params;
-	const { title, description, xp_reward, due_date, status, team_id } = req.body;
+	const { title, desc, description, task_xp, xp_reward, date_created, date_due, status, team_id, created_by } = req.body;
 	try {
 		const task = await Task.findOne({ where: { id: taskId, workspace_id: req.workspaceId, deleted_at: null } });
 		if (!task) return res.status(404).json({ message: 'Task not found' });
@@ -41,11 +46,16 @@ router.put('/admin/tasks/:taskId', authenticate, requireWorkspaceRole(['owner', 
 		}
 		await task.update({
 			title: title ?? task.title,
+			desc: desc ?? task.desc,
 			description: description ?? task.description,
+			task_xp: task_xp ?? task.task_xp,
 			xp_reward: xp_reward ?? task.xp_reward,
-			due_date: due_date ?? task.due_date,
+			date_created: date_created ?? task.date_created,
+			date_due: date_due ?? task.date_due,
+			due_date: date_due ?? task.due_date,
 			status: status ?? task.status,
 			team_id: team_id ?? task.team_id,
+			created_by: created_by ?? task.created_by,
 		});
 		return res.json(task);
 	} catch (err) {
@@ -54,7 +64,7 @@ router.put('/admin/tasks/:taskId', authenticate, requireWorkspaceRole(['owner', 
 	}
 });
 
-router.delete('/admin/tasks/:taskId', authenticate, requireWorkspaceRole(['owner', 'admin']), async (req, res) => {
+router.delete('/admin/tasks/:taskId', authenticate, requireWorkspaceRole(['admin']), async (req, res) => {
 	const { taskId } = req.params;
 	try {
 		const task = await Task.findOne({ where: { id: taskId, workspace_id: req.workspaceId, deleted_at: null } });
@@ -118,7 +128,7 @@ router.post('/tasks/:taskId/complete', authenticate, requireWorkspaceMember, asy
 	}
 });
 
-router.post('/admin/tasks/:taskId/assign', authenticate, requireWorkspaceRole(['owner', 'admin']), async (req, res) => {
+router.post('/admin/tasks/:taskId/assign', authenticate, requireWorkspaceRole(['admin']), async (req, res) => {
 	const { taskId } = req.params;
 	const { userId } = req.body;
 	if (!userId) return res.status(400).json({ message: 'User required' });

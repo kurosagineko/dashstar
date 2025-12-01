@@ -5,13 +5,22 @@ import { requireWorkspaceMember, requireWorkspaceRole } from '../middleware/work
 
 const router = Router();
 
-router.post('/admin/teams', authenticate, requireWorkspaceRole(['owner', 'admin']), async (req, res) => {
-	const { name, description, manager_name } = req.body;
-	if (!name) return res.status(400).json({ message: 'Team name required' });
+router.post('/admin/teams', authenticate, requireWorkspaceRole(['admin']), async (req, res) => {
+	const { team_name, description, manager_name, user_id_list, admin_id } = req.body;
+	if (!team_name) return res.status(400).json({ message: 'Team name required' });
 	try {
-		const existing = await Team.findOne({ where: { name, workspace_id: req.workspaceId, deleted_at: null } });
+		const existing = await Team.findOne({ where: { team_name, workspace_id: req.workspaceId, deleted_at: null } });
 		if (existing) return res.status(409).json({ message: 'Team already exists' });
-		const team = await Team.create({ workspace_id: req.workspaceId, name, description, manager_name });
+		const team = await Team.create({
+			workspace_id: req.workspaceId,
+			workspace_code: req.workspaceCode,
+			team_name,
+			name: team_name,
+			description,
+			manager_name,
+			user_id_list: user_id_list || null,
+			admin_id: admin_id || null,
+		});
 		return res.status(201).json(team);
 	} catch (err) {
 		console.error(err);
@@ -19,7 +28,7 @@ router.post('/admin/teams', authenticate, requireWorkspaceRole(['owner', 'admin'
 	}
 });
 
-router.post('/admin/teams/:teamId/users/:userId', authenticate, requireWorkspaceRole(['owner', 'admin']), async (req, res) => {
+router.post('/admin/teams/:teamId/users/:userId', authenticate, requireWorkspaceRole(['admin']), async (req, res) => {
 	const { teamId, userId } = req.params;
 	try {
 		const team = await Team.findOne({ where: { id: teamId, workspace_id: req.workspaceId, deleted_at: null } });
@@ -36,7 +45,7 @@ router.post('/admin/teams/:teamId/users/:userId', authenticate, requireWorkspace
 	}
 });
 
-router.delete('/admin/teams/:teamId', authenticate, requireWorkspaceRole(['owner', 'admin']), async (req, res) => {
+router.delete('/admin/teams/:teamId', authenticate, requireWorkspaceRole(['admin']), async (req, res) => {
 	const { teamId } = req.params;
 	try {
 		const team = await Team.findOne({ where: { id: teamId, workspace_id: req.workspaceId, deleted_at: null } });

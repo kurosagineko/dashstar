@@ -4,6 +4,10 @@ export default (sequelize, DataTypes) =>
 		{
 			id: { type: DataTypes.INTEGER, allowNull: false, autoIncrement: true, primaryKey: true },
 			team_id: { type: DataTypes.INTEGER, allowNull: true, references: { model: 'teams', key: 'id' } },
+			workspace_code: { type: DataTypes.STRING(64), allowNull: true },
+			current_tasks: { type: DataTypes.TEXT, allowNull: true, defaultValue: '[]' },
+			numTasksCompleted: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
+			pfp: { type: DataTypes.STRING(255), allowNull: true },
 			username: { type: DataTypes.STRING(50), allowNull: false, unique: true },
 			name: { type: DataTypes.STRING(100), allowNull: false },
 			email: { type: DataTypes.STRING(150), allowNull: false, unique: true },
