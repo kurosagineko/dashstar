@@ -5,9 +5,7 @@ import './CSS/taskcard.css';
 export default function TaskCard({ task_id, title, desc }) {
 	const [statusForCard, setStatusForCard] = useState('');
 
-	useEffect(() => {
-		console.log('uplift callback:', statusForCard);
-	}, [statusForCard]);
+	useEffect(() => {}, [statusForCard]);
 
 	const cardStatusSetter = status => {
 		setStatusForCard(status);

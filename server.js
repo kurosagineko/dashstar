@@ -1,4 +1,5 @@
-import RegisterLoginRoute from './server/routes/RegisterLoginRoutes.js';
+import registerLoginRoute from './server/routes/registerLoginRoutes.js';
+import taskRoutes from './server/routes/tasksRoutes.js';
 import express from 'express';
 import sequelize from './server/config/db.js';
 import cors from 'cors';
@@ -31,8 +32,10 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 
-app.use('/api', RegisterLoginRoute);
+app.use('/api', registerLoginRoute);
+app.use('/api/', taskRoutes);
 
 app.use((err, req, res, next) => {
 	console.error('error:', err);

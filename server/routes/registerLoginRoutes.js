@@ -11,7 +11,7 @@ import {
 	TeamMember,
 	Task,
 } from '../models/indexModel.js';
-import uniqueWorkspaceCode from '../scripts/util.js';
+import { uniqueWorkspaceCode } from '../scripts/util.js';
 import { query, body, param, validationResult } from 'express-validator';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -60,15 +60,15 @@ router.get('/me', (req, res) => {
 		})
 			.then(user => {
 				if (!user) throw new Error('User not found');
-				res.json({ data: { user } });
+				return res.json({ data: { user } });
 			})
 			.catch(e => {
 				console.error('User lookup failed →', e);
-				res.status(500).json({ error: { message: 'Server error' } });
+				return res.status(500).json({ error: { message: 'Server error' } });
 			});
 	} catch (e) {
 		console.error('Token verification failed →', e);
-		res.status(401).json({ error: { message: 'Invalid token' } });
+		return res.status(401).json({ error: { message: 'Invalid token' } });
 	}
 });
 
@@ -154,33 +154,56 @@ router.post(
 				{ transaction }
 			);
 
-			// // create Workspace entry by default with randomized unique code and assign the users id as the admin_user_id
-			// const defaultWorkspace = await Workspace.create({
-			// 	code: 'abc',
-			// 	admin_user_id: newUser.id,
-			// });
+			// create Workspace entry by default with randomized unique code and assign the users id as the admin_user_id
+			const defaultWorkspace = await Workspace.create(
+				{
+					code: uniqueWorkspaceCode(25),
+					admin_user_id: newUser.id,
+				},
+				{ transaction }
+			);
 
-			// // add created Workspace to a UserWorkspace entry with the created Workspace id as the workspace_id, add the users id as user_id
-			// const defaultUserWorkspace = await UserWorkspace.create({
-			// 	user_id: newUser.id,
-			// 	workspace_id: defaultWorkspace.id,
-			// 	role: 'admin',
-			// });
+			// add created Workspace to a UserWorkspace entry with the created Workspace id as the workspace_id, add the users id as user_id
+			await UserWorkspace.create(
+				{
+					user_id: newUser.id,
+					workspace_id: defaultWorkspace.id,
+					role: 'admin',
+				},
+				{ transaction }
+			);
 
-			// // Create default team entry on Teams called *personal* with the created Workspace id as the workspace_id and the admin_user id as the users id
-			// const defaultTeam = await Team.create({
-			// 	workspace_id: defaultUserWorkspace.id,
-			// 	name: 'personal',
-			// 	admin_user_id: newUser.id,
-			// });
+			// Create default team entry on Teams called *personal* with the created Workspace id as the workspace_id and the admin_user id as the users id
+			const defaultTeam = await Team.create(
+				{
+					workspace_id: defaultWorkspace.id,
+					name: 'personal',
+					admin_user_id: newUser.id,
+				},
+				{ transaction }
+			);
 
-			// // Create a TeamMembers entry with the personal teams id as the team_id and the users id as user_id
-			// const defaultTeamMembers = await TeamMember.create({
-			// 	team_id: defaultTeam.id,
-			// 	user_id: newUser.id,
-			// });
+			// Create a TeamMembers entry with the personal teams id as the team_id and the users id as user_id
+			await TeamMember.create(
+				{
+					team_id: defaultTeam.id,
+					user_id: newUser.id,
+				},
+				{ transaction }
+			);
 
-			// const sampleTask = await Task.create({});
+			await Task.create(
+				{
+					team_id: defaultTeam.id,
+					created_by_user_id: newUser.id,
+					task_name: 'Sample Task',
+					task_desc: 'This is a test task, testing db connection',
+					date_due: null,
+					status: 'open',
+					task_xp: 10,
+				},
+				{ transaction }
+			);
 
 			await transaction.commit();
 

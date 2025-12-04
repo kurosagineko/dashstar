@@ -25,7 +25,7 @@ export default (sequelize, DataTypes) => {
 		},
 		{
 			tableName: 'Workspaces',
-			timestamps: true,
+			timestamps: false,
 			underscored: true,
 		}
 	);

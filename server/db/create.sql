@@ -15,18 +15,13 @@ CREATE TABLE Users (
     xp INT UNSIGNED NOT NULL DEFAULT 0,
     numTasksCompleted  INT UNSIGNED NOT NULL DEFAULT 0,
     theme VARCHAR(50)  NULL DEFAULT 'dark',
-    avatar_url VARCHAR(255) NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP NULL
+    avatar_url VARCHAR(255) NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE Workspaces (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(64) NOT NULL UNIQUE,         
     admin_user_id INT UNSIGNED NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_workspace_admin FOREIGN KEY (admin_user_id)
         REFERENCES Users(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB;
@@ -45,8 +40,6 @@ CREATE TABLE Teams (
     workspace_id INT UNSIGNED NOT NULL,
     name VARCHAR(255) NOT NULL,
     admin_user_id INT UNSIGNED NOT NULL,                     
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT uq_team_name_per_workspace UNIQUE (workspace_id, name),
     CONSTRAINT fk_team_workspace FOREIGN KEY (workspace_id)
         REFERENCES Workspaces(id) ON DELETE CASCADE,
@@ -73,9 +66,6 @@ CREATE TABLE Tasks (
     date_due TIMESTAMP NULL,
     status ENUM('open','inprogress','complete') NOT NULL DEFAULT 'open',
     task_xp INT UNSIGNED NOT NULL DEFAULT 10,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP NULL,
     CONSTRAINT fk_task_team FOREIGN KEY (team_id)
         REFERENCES Teams(id) ON DELETE CASCADE,
     CONSTRAINT fk_task_creator FOREIGN KEY (created_by_user_id)
@@ -90,8 +80,6 @@ CREATE TABLE Schedules (
     end_at DATETIME NULL,
     status ENUM('planned','active','complete','cancelled') NOT NULL DEFAULT 'planned',
     message TEXT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_schedule_team FOREIGN KEY (team_id)
         REFERENCES Teams(id) ON DELETE CASCADE,
     CONSTRAINT fk_schedule_creator FOREIGN KEY (created_by_user_id)
@@ -103,8 +91,6 @@ CREATE TABLE Messages (
     team_id INT UNSIGNED NOT NULL,
     created_by_user_id INT UNSIGNED NOT NULL,
     content TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_message_team FOREIGN KEY (team_id)
         REFERENCES Teams(id) ON DELETE CASCADE,
     CONSTRAINT fk_message_creator FOREIGN KEY (created_by_user_id)

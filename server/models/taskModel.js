@@ -51,7 +51,7 @@ export default (sequelize, DataTypes) => {
 		},
 		{
 			tableName: 'Tasks',
-			timestamps: true,
+			timestamps: false,
 			paranoid: true, // adds deletedAt (soft‑delete)
 			underscored: true,
 		}

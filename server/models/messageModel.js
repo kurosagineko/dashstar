@@ -32,7 +32,7 @@ export default (sequelize, DataTypes) => {
 		},
 		{
 			tableName: 'Messages',
-			timestamps: true, // adds createdAt / updatedAt
+			timestamps: false,
 			underscored: true,
 		}
 	);

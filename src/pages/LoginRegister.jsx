@@ -49,7 +49,6 @@ export default function LoginRegister() {
 		} else {
 			if (e.target.name === 'passwordMatch') {
 				setPasswordMatch(e.target.value);
-				console.log(e.target.value);
 			}
 
 			setFormDataRegister({
@@ -86,15 +85,14 @@ export default function LoginRegister() {
 
 		if (status === 200 || status === 201) {
 			const user = responseData.data.user;
+			if (!user) return;
+			if (Object.keys(user).length === 0) return;
+			if (user.username === '' || user.email === '') return;
 			console.log('Login', user);
 			login(user);
-			responseData.data.user.role === 'user'
-				? navigate('/dashboard', {
-						replace: true,
-				  })
-				: navigate('/admin', {
-						replace: true,
-				  });
+			navigate('/dashboard', {
+				replace: true,
+			});
 		} else {
 			setMsg(responseData.error.message);
 		}

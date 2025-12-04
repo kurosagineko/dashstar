@@ -4,21 +4,11 @@ import { useAuth } from '../context/AuthContext';
 import TaskCard from '../components/TaskCard';
 import TaskList from '../components/TaskList';
 import TeamIconButton from '../components/TeamIconButton';
+import CreateTaskModal from '../components/CreateTaskModal';
 import './CSS/dashboard.css';
 
 import avatarDefault from '../assets/avatardefault.svg';
 import burgerMenuIcon from '../assets/BurgerMenuIcon.png';
-
-const exampleTask = {
-	id: 0,
-	team_id: 0,
-	create_by_user_id: 2,
-	task_name: 'Check for bugs',
-	task_desc: 'Make sure server.js runs without errors',
-	date_due: null,
-	status: 'open',
-	task_xp: 10,
-};
 
 export default function Dashboard() {
 	const { user, logout } = useAuth();
@@ -27,64 +17,63 @@ export default function Dashboard() {
 	const [nextXp, setNextXp] = useState(0);
 	const [xPSession, setXPSession] = useState(0);
 	const [username, setUsername] = useState('');
+	const [avatar, setAvatar] = useState(avatarDefault);
 	const [taskList, setTaskList] = useState([]);
 	const [inprogressList, setInprogressList] = useState([]);
 	const [completeList, setCompleteList] = useState([]);
 	const [currentBoard, setCurrentBoard] = useState('Personal');
+	const [showTaskModal, setShowTaskModal] = useState(false);
+	const [refreshCounter, setRefreshCounter] = useState(0); // bump this when a change happens in the task lists to trigger the hook
 
 	useEffect(() => {
-		// populate the task lists on load
-		// only have and only will ever have 3 lists, sorry for the magic number :P
-		// for (let i = 0; i < 3; i++) {
-		// 	let status = '';
-		// 	if (i === 0) {
-		// 		status = 'open';
-		// 	} else if (i === 1) {
-		// 		status = 'inprogress';
-		// 	} else {
-		// 		status = 'complete';
-		// 	}
-
-		// 	const tempList = tasks.filter(task => task.status === status);
-
-		// 	if (tempList.length !== 0) {
-		// 		if (tempList[0].status === 'open') {
-		// 			setTaskList(tempList);
-		// 		} else if (tempList[0].status === 'inprogress') {
-		// 			setInprogressList(tempList);
-		// 		} else if (tempList[0].status === 'complete') {
-		// 			setCompleteList(tempList);
-		// 		}
-		// 	}
-		// }
 		console.log('Dashboard', user);
 		setLevel(user.level);
 		setTotalXp(user.xp);
 		setUsername(user.username);
-
-		//example task
-		setTaskList([exampleTask]);
+		if (user.avatar_url !== '') setAvatar(user.avatar_url);
 	}, []);
 
-	const createNewTask = task => {
-		if (!task.task_name || !task.task_desc) {
-			console.log('Task must have a name and a short description');
-			return;
-		}
+	useEffect(() => {
+		const abort = new AbortController();
 
-		setTaskList([...taskList, task]);
-	};
+		try {
+			fetch(`http://localhost:3002/api/tasks?user_id=${user.id}`, {
+				signal: abort.signal,
+			})
+				.then(res => {
+					if (!res.ok) {
+						console.log({ error: 'Something went wrong fetching tasks' });
+					}
+					return res.json();
+				})
+				.then(data => {
+					const openTasks = data.tasks.filter(task => task.status === 'open');
+					setTaskList([...openTasks]);
+
+					const inprogressTasks = data.tasks.filter(
+						task => task.status === 'inprogress'
+					);
+					setInprogressList([...inprogressTasks]);
+
+					const completeTasks = data.tasks.filter(
+						task => task.status === 'complete'
+					);
+					setCompleteList([...completeTasks]);
+				});
+		} catch (error) {
+			console.log('Error loading tasks', error);
+		}
+	}, [refreshCounter]);
 
 	const populateTeamIconButtons = () => {};
 
-	const showCreateTaskModal = () => {};
+	const toggleCreateTaskModal = () => setShowTaskModal(prev => !prev);
 
 	const showCreateNewTeamModal = () => {};
 
 	const switchDashboard = () => {};
 
-	const populateLists = () => {};
-
+	// make reusable
 	const TaskListPlaceHolder = () => {
 		const placeholderStyle = {
 			height: '100%',
@@ -112,7 +101,7 @@ export default function Dashboard() {
 			<TaskList
 				title={title}
 				showCreateBtn={showCreateBtn}
-				onClickHandler={() => createNewTask(exampleTask)}
+				onClickHandler={toggleCreateTaskModal}
 			>
 				{list.length !== 0 ? (
 					<ul className='task-list dash-bg dash-border dash-shadow'>
@@ -135,6 +124,21 @@ export default function Dashboard() {
 
 	return (
 		<div className='dashboard'>
+			<div>
+				<div
+					className='modal-bg '
+					style={showTaskModal ? { display: 'block' } : { display: 'none' }}
+					onClick={() => toggleCreateTaskModal()}
+				></div>
+				<div style={showTaskModal ? { display: 'block' } : { display: 'none' }}>
+					<CreateTaskModal
+						onClickHandler={toggleCreateTaskModal}
+						refreshHandler={setRefreshCounter}
+						id={user.id}
+					/>
+				</div>
+			</div>
+
 			<div className='dash-header'>
 				<div className='burger-menu'>
 					<img
@@ -156,14 +160,16 @@ export default function Dashboard() {
 						<p>XP To Next: {nextXp}</p>
 						<p>XP This session: {xPSession}</p>
 					</div>
+
 					<Link to='/profile'>
 						<div className='profile-widget dash-bg dash-border dash-shadow'>
 							<div className='user-info'>
 								<p>{username}</p>
 							</div>
-							<div className='profile-pic'>
+							<div className='profile-pic-container'>
 								<img
-									src={avatarDefault}
+									className='profile-pic'
+									src={avatar}
 									alt='user profile picture'
 								/>
 							</div>
@@ -172,6 +178,7 @@ export default function Dashboard() {
 				</div>
 			</div>
 			{}
+
 			<div className='dash-main'>
 				{/* Add images for buttons here with onClick functionality */}
 				<div className='dash-buttons dash-border dash-shadow'>
