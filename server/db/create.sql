@@ -64,7 +64,7 @@ CREATE TABLE Tasks (
     task_name VARCHAR(150) NOT NULL,
     task_desc TEXT NULL,
     date_due TIMESTAMP NULL,
-    status ENUM('open','inprogress','complete') NOT NULL DEFAULT 'open',
+    status ENUM('open','inprogress','complete', 'archive') NOT NULL DEFAULT 'open',
     task_xp INT UNSIGNED NOT NULL DEFAULT 10,
     CONSTRAINT fk_task_team FOREIGN KEY (team_id)
         REFERENCES Teams(id) ON DELETE CASCADE,

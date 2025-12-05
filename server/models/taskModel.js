@@ -38,7 +38,7 @@ export default (sequelize, DataTypes) => {
 				allowNull: true,
 			},
 			status: {
-				type: DataTypes.ENUM('open', 'inprogress', 'complete'),
+				type: DataTypes.ENUM('open', 'inprogress', 'complete', 'archive'),
 				allowNull: false,
 				defaultValue: 'open',
 			},

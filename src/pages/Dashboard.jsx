@@ -10,6 +10,17 @@ import './CSS/dashboard.css';
 import avatarDefault from '../assets/avatardefault.svg';
 import burgerMenuIcon from '../assets/BurgerMenuIcon.png';
 
+// show error messages on registration and login
+// show loading when logging in or logging out
+// task streaks
+// show teams of workspace
+// show members of team
+// metrics
+// badges
+// achievements
+// get stars for leveling up, spend stars in a shop with company added rewards
+// change theme
+
 export default function Dashboard() {
 	const { user, logout } = useAuth();
 	const [level, setLevel] = useState(0);
@@ -108,9 +119,12 @@ export default function Dashboard() {
 						{list.map(task => (
 							<li key={task.id}>
 								<TaskCard
+									status={task.status}
+									user_id={user.id}
 									task_id={task.id}
 									title={task.task_name}
 									desc={task.task_desc}
+									refreshHandler={setRefreshCounter}
 								/>
 							</li>
 						))}
@@ -149,7 +163,9 @@ export default function Dashboard() {
 
 				<button onClick={() => logout()}>Logout</button>
 
-				<h2 style={{ fontSize: '2rem' }}>{currentBoard}</h2>
+				<div className='workspace-label'>
+					<h2>{currentBoard}</h2>
+				</div>
 
 				<div className='widgets'>
 					<div className='level-widget dash-bg dash-border dash-shadow'>
@@ -169,7 +185,7 @@ export default function Dashboard() {
 							<div className='profile-pic-container'>
 								<img
 									className='profile-pic'
-									src={avatar}
+									src={avatar || avatarDefault}
 									alt='user profile picture'
 								/>
 							</div>

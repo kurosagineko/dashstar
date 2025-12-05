@@ -1,51 +1,80 @@
 import { useEffect, useState } from 'react';
 
-export default function CardButton({ task_id, statusSetter }) {
-	const [status, setStatus] = useState('open');
+export default function CardButton({
+	status,
+	user_id,
+	task_id,
+	refreshHandler,
+}) {
+	let buttonLabel = '';
+	let buttonStyle = {};
+	if (status === 'complete') {
+		buttonLabel = 'Archive';
+		buttonStyle = { backgroundColor: '#666' };
+	} else {
+		buttonLabel = status === 'open' ? 'Assign' : 'Complete';
+		buttonStyle =
+			status === 'open'
+				? { backgroundColor: 'rgb(56, 14, 134)' } // assign
+				: { backgroundColor: 'rgb(14, 134, 94)' }; // complete
+	}
 
-	useEffect(() => {
-		statusSetter(status);
-		// console.log('list after state change (via useEffect):', status);
+	const handleClick = async () => {
+		if (!user_id) {
+			console.warn('No user id');
+			return;
+		}
+		if (!task_id) {
+			console.warn('No task id');
+			return;
+		}
 
-		// const newData = tasks.map(element => {
-		// 	if (element.id === task_id) {
-		// 		return { ...element, status: status };
-		// 	}
-		// 	return element;
-		// });
-		// console.log('newData:', newData);
-		// console.log('taskData', tasks);
-	}, [status, statusSetter]);
+		let nextStatus = '';
+		switch (status) {
+			case 'open':
+				nextStatus = 'inprogress';
+				break;
+			case 'inprogress':
+				nextStatus = 'complete';
+				break;
+			case 'complete':
+				nextStatus = 'archive';
+		}
 
-	const ButtonStyle = {
-		assign: {
-			backgroundColor: 'rgb(56, 14, 134)',
-		},
-		complete: {
-			backgroundColor: 'rgb(14, 134, 94)',
-		},
+		const payload = {
+			user_id,
+			status: nextStatus,
+		};
+
+		try {
+			const response = await fetch(
+				`http://localhost:3002/api/tasks/${task_id}`,
+				{
+					method: 'POST', // adjust if your API expects POST
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(payload),
+				}
+			);
+
+			if (!response.ok) {
+				console.log(response.status);
+			}
+
+			refreshHandler(c => c + 1);
+		} catch (error) {
+			console.error('error:', error);
+		}
 	};
-
-	const handleClick = () => {
-		console.log('status before setState:', status);
-		setStatus(prev => (prev === 'open' ? 'inprogress' : 'complete'));
-	};
-
-	if (status === 'complete') return null;
 
 	return (
 		<div>
-			{status !== 'complete' ? (
-				<button
-					className='btn'
-					style={status === 'open' ? ButtonStyle.assign : ButtonStyle.complete}
-					onClick={handleClick}
-				>
-					{status === 'open' ? 'Assign' : 'Complete'}
-				</button>
-			) : (
-				<></>
-			)}
+			<button
+				className='btn'
+				style={buttonStyle}
+				onClick={handleClick}
+			>
+				{buttonLabel}
+			</button>
 		</div>
 	);
 }
