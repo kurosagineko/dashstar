@@ -13,8 +13,6 @@ import burgerMenuIcon from '../assets/BurgerMenuIcon.png';
 // show dashboard btn on landing instead of login register if already logged in
 // forgot password link
 // Add a way to view and restore archived tasks
-// show error messages on registration and login
-// show loading when logging in or logging out
 // task streaks
 // show teams of workspace
 // show members of team
