@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 export default function CardButton({
 	status,
 	user_id,
@@ -50,7 +48,7 @@ export default function CardButton({
 			const response = await fetch(
 				`http://localhost:3002/api/tasks/${task_id}`,
 				{
-					method: 'POST', // adjust if your API expects POST
+					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify(payload),
 				}

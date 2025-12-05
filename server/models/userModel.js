@@ -22,11 +22,6 @@ export default (sequelize, DataTypes) => {
 				type: DataTypes.STRING(255),
 				allowNull: false,
 			},
-			role: {
-				type: DataTypes.ENUM('admin', 'user'),
-				defaultValue: 'user',
-				allowNull: false,
-			},
 			level: {
 				type: DataTypes.INTEGER.UNSIGNED,
 				defaultValue: 1,

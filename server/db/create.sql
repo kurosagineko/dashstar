@@ -10,7 +10,6 @@ CREATE TABLE Users (
     username VARCHAR(50)  NOT NULL UNIQUE,
     email VARCHAR(150) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
-    role ENUM('admin','user') NOT NULL,
     level INT UNSIGNED NOT NULL DEFAULT 1,
     xp INT UNSIGNED NOT NULL DEFAULT 0,
     numTasksCompleted  INT UNSIGNED NOT NULL DEFAULT 0,

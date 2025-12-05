@@ -1,0 +1,24 @@
+.login-container {
+  background-color: var(--dash-element-bg);
+  border: var(--dash-element-border);
+  border-radius: 20px;
+  margin: 30px auto;
+  width: 600px;
+  height: 400px;
+  padding: 30px;
+}
+
+.login-form-element {
+  width: 400px;
+  margin: 20px auto;
+}
+
+.register-container {
+  background-color: var(--dash-element-bg);
+  border: var(--dash-element-border);
+  border-radius: 20px;
+  margin: 30px auto;
+  width: 600px;
+  height: 800px;
+  padding: 30px;
+}

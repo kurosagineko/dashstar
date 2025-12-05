@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import logo from '../assets/dash-logo.png';
 import './CSS/loginregister.css';
+import avatarDefault from '../assets/avatardefault.svg';
 
 export default function LoginRegister() {
 	const { state } = useLocation();
@@ -117,14 +118,14 @@ export default function LoginRegister() {
 						</h2>
 					</div>
 
-					<div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
+					<div className='login-container'>
 						<form
 							action='#'
 							method='POST'
 							onSubmit={handleOnSubmit}
 							className='space-y-6'
 						>
-							<div>
+							<div className='login-form-element'>
 								<label
 									htmlFor='email'
 									className='block text-sm/6 font-medium text-gray-100 tx'
@@ -145,7 +146,7 @@ export default function LoginRegister() {
 								</div>
 							</div>
 
-							<div>
+							<div className='login-form-element'>
 								<div className='flex items-center justify-between'>
 									<label
 										htmlFor='password'
@@ -180,13 +181,8 @@ export default function LoginRegister() {
 								<p className='mt-2 text-center text-sm text-red-400'>{msg}</p>
 							)}
 
-							<div>
-								<button
-									type='submit'
-									className='mr-auto ml-auto flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500'
-								>
-									Sign in
-								</button>
+							<div style={{ width: 'fit-content', margin: '10px auto' }}>
+								<button type='submit'>Sign in</button>
 							</div>
 						</form>
 
@@ -221,7 +217,7 @@ export default function LoginRegister() {
 						</h2>
 					</div>
 
-					<div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
+					<div className='register-container'>
 						<form
 							action='#'
 							method='POST'
@@ -324,28 +320,6 @@ export default function LoginRegister() {
 							</div>
 
 							<div>
-								<label
-									htmlFor='role'
-									className='block text-sm/6 font-medium text-gray-100 tx'
-								>
-									Account Role
-								</label>
-								<div className='mt-2'>
-									<select
-										id='role'
-										name='role'
-										onChange={handleOnChange}
-										value={formDataRegister.role}
-										style={{ backgroundColor: 'rgb(49, 0, 37)' }}
-										className='block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6'
-									>
-										<option value='user'>User</option>
-										<option value='admin'>Admin</option>
-									</select>
-								</div>
-							</div>
-
-							<div>
 								<div className='flex items-center justify-between'>
 									<label
 										htmlFor='avatar_url'
@@ -377,7 +351,7 @@ export default function LoginRegister() {
 										}}
 										src={
 											!formDataRegister.avatar_url
-												? null
+												? avatarDefault
 												: formDataRegister.avatar_url
 										}
 										alt='Avatar image preview'
@@ -389,13 +363,8 @@ export default function LoginRegister() {
 								<p className='mt-2 text-center text-sm text-red-400'>{msg}</p>
 							)}
 
-							<div>
-								<button
-									type='submit'
-									className='mr-auto ml-auto flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500'
-								>
-									Register
-								</button>
+							<div style={{ width: 'fit-content', margin: '10px auto' }}>
+								<button type='submit'>Register</button>
 							</div>
 						</form>
 
